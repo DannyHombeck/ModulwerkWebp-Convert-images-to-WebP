@@ -1,0 +1,10 @@
+{
+  "main.js": {
+    "file": "assets/modulwerkwebp-2.0.6.js",
+    "name": "modulwerkwebp",
+    "src": "main.js",
+    "isEntry": true,
+    "css": [],
+    "assets": []
+  }
+}

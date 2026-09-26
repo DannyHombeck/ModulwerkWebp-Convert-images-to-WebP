@@ -1,0 +1,41 @@
+{
+  "base": "/bundles/modulwerkwebp/administration/",
+  "entryPoints": {
+    "modulwerkwebp": {
+      "css": [],
+      "dynamic": [],
+      "js": [
+        "/bundles/modulwerkwebp/administration/assets/modulwerkwebp-2.0.6.js"
+      ],
+      "legacy": false,
+      "preload": []
+    },
+    "modulwerk-webp": {
+      "css": [],
+      "dynamic": [],
+      "js": [
+        "/bundles/modulwerkwebp/administration/assets/modulwerkwebp-2.0.6.js"
+      ],
+      "legacy": false,
+      "preload": []
+    },
+    "ModulwerkWebp": {
+      "css": [],
+      "dynamic": [],
+      "js": [
+        "/bundles/modulwerkwebp/administration/assets/modulwerkwebp-2.0.6.js"
+      ],
+      "legacy": false,
+      "preload": []
+    }
+  },
+  "legacy": false,
+  "metadatas": {},
+  "version": [
+    "7.1.0",
+    7,
+    1,
+    0
+  ],
+  "viteServer": null
+}

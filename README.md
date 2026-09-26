@@ -29,7 +29,8 @@ Welche Bibliothek auf dem Server zur Verfügung steht, zeigt die Übersicht.
 
 ## Bedienung
 
-Menü **Inhalte → Modulwerk WebP-Konverter**:
+Menü **Inhalte → Modulwerk WebP-Konverter** (abschaltbar, dann über
+**Einstellungen → Erweiterungen → Modulwerk WebP-Konverter**):
 
 - **Offene Bilder umwandeln** arbeitet alle offenen Medien in Portionen ab und
   zeigt den Fortschritt. Jede Anfrage dauert höchstens rund 20 Sekunden, so
@@ -59,10 +60,12 @@ gelöschten Medien und neu erzeugten Thumbnails. Abschaltbar unter
 Einstellungen → Automatik. Nach Änderungen an den Einstellungen und nach dem
 Deaktivieren des Plugins den Cache selbst leeren.
 
-## Medienordner „Modulwerk WebP-Konverter“
+## Medienordner
 
-Unter **Inhalte → Medien** erscheint der Ordner „Modulwerk WebP-Konverter“ mit der
-WebP-Fassung jedes Originalbildes. Die Einträge zeigen direkt auf die Dateien
+Unter **Inhalte → Medien** erscheint ein eigener Ordner mit der WebP-Fassung
+jedes Originalbildes. Sein Name ist in den Einstellungen unter **Name des
+Medienordners** frei wählbar (Standard „Modulwerk WebP-Konverter“); eine
+Änderung benennt den vorhandenen Ordner nach dem Speichern direkt um. Die Einträge zeigen direkt auf die Dateien
 in `modulwerk-webp/`, es wird nichts kopiert und es entstehen keine Thumbnails.
 Thumbnails selbst werden dort nicht aufgeführt.
 
@@ -95,8 +98,12 @@ Abschaltbar unter Einstellungen → Medienverwaltung.
 | Cache automatisch leeren | Seiten-Cache nach jeder Verarbeitung leeren |
 | Geplante Aufgabe: Abstand in Minuten oder feste Uhrzeit, Medien je Durchlauf | Automatik für neue Bilder |
 | Lazy Loading | `loading="lazy"` ab dem n-ten Bild; Klasse `no-lazyload` schließt aus |
+| Name des Medienordners | Ordnername unter Inhalte → Medien, Standard „Modulwerk WebP-Konverter“ |
+| Unter „Inhalte“ im Hauptmenü anzeigen | Menüeintrag im Admin ein- oder ausblenden, wirkt direkt nach dem Speichern |
 
-Lazy Loading nicht zusätzlich zu einem anderen Lazy-Loading-Plugin aktivieren.
+⚠️ Lazy Loading nicht zusätzlich zu einem anderen Lazy-Loading-Plugin oder einer
+entsprechenden Theme-Option aktivieren. In den Einstellungen ist die Option
+deshalb mit einem Warndreieck markiert.
 
 ## Befehle
 

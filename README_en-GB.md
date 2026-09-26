@@ -28,7 +28,9 @@ The overview shows which library is available on the server.
 
 ## Usage
 
-Menu **Content → Modulwerk WebP converter**:
+Menu **Content → Modulwerk WebP converter** (can be switched off, then via
+**Settings → Extensions → Modulwerk WebP-Konverter**; setting
+"Show under Content in the main menu", takes effect right after saving):
 
 - **Convert pending images** processes all pending media in batches and shows
   the progress. Each request takes at most about 20 seconds, so even a tight
@@ -56,10 +58,12 @@ media and regenerated thumbnails. Can be switched off under Settings →
 Automation. Clear the cache yourself after changing settings and after
 deactivating the plugin.
 
-## Media folder "Modulwerk WebP-Konverter"
+## Media folder
 
-Under **Content → Media** the folder "Modulwerk WebP-Konverter" lists the WebP version
-of every original image. The entries point directly to the files in
+Under **Content → Media** an own folder lists the WebP version of every
+original image. Its name can be chosen freely in the settings under **Name of
+the media folder** (default "Modulwerk WebP-Konverter"); changing it renames
+the existing folder right after saving. The entries point directly to the files in
 `modulwerk-webp/`; nothing is copied and no thumbnails are created. Alt text and title are taken over from the original in all languages and kept in sync; edit them on the original. Deleting or
 renaming an entry there makes the storefront serve the original again;
 "Recreate" in the overview brings it back. "Delete unused media" keeps the
@@ -89,6 +93,9 @@ there.
   therefore converted to sRGB by Imagick before conversion so the colours stay
   right. GD cannot do this – such images are skipped with GD and the
   storefront shows the original.
+- ⚠️ Lazy loading: do not enable it together with another lazy loading plugin
+  or theme option. The option is therefore marked with a warning triangle in
+  the settings.
 - Private media (e.g. documents) are never converted.
 - With external storage (S3, CDN) the WebP files end up in the same public
   filesystem.

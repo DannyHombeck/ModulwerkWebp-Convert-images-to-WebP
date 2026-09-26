@@ -1,3 +1,24 @@
+# 2.0.13
+- Übersicht und Einstellungen: Plugin-Icon vor dem Namen im Seitenkopf
+
+# 2.0.12
+- Eintrag unter Einstellungen → Erweiterungen führt direkt zur Übersicht statt zu den Einstellungen
+
+# 2.0.11
+- Einstellung Lazy Loading mit Warndreieck markiert; der Hinweis, sie nicht zusammen mit einem anderen Lazy-Loading-Plugin oder einer Theme-Option zu aktivieren, steht jetzt am Anfang des Hilfetexts
+
+# 2.0.10
+- Fehler behoben: Seit 2.0.7 konnte das linke Admin-Hauptmenü komplett verschwinden. Die Menüliste von Shopware wird nicht mehr gefiltert oder beobachtet; „Unter Inhalte im Hauptmenü anzeigen“ blendet nur noch den eigenen Eintrag per CSS aus
+
+# 2.0.9
+- Übersicht: Spalten Status, Original, WebP, Ersparnis und die Schaltfläche „Neu erzeugen“ mittig unter ihren Überschriften ausgerichtet
+
+# 2.0.8
+- Neue Einstellung „Name des Medienordners“ (Standard „Modulwerk WebP-Konverter“): benennt den Ordner unter Inhalte → Medien direkt nach dem Speichern um; die Übersicht zeigt den aktuellen Ordnernamen
+
+# 2.0.7
+- Neue Einstellung „Unter Inhalte im Hauptmenü anzeigen“: Menüeintrag im Admin ein- oder ausblenden, wirkt direkt nach dem Speichern; Einstellungsseite mit Schaltfläche „Übersicht“
+
 # 2.0.6
 - Rechteinhaber in Lizenz und composer.json: Danny Hombeck
 

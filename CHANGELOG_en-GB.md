@@ -1,3 +1,24 @@
+# 2.0.13
+- Overview and settings: plugin icon in front of the name in the page header
+
+# 2.0.12
+- Entry under Settings → Extensions now leads directly to the overview instead of the settings
+
+# 2.0.11
+- Lazy loading setting marked with a warning triangle; the note not to enable it together with another lazy loading plugin or theme option now opens the help text
+
+# 2.0.10
+- Fixed: since 2.0.7 the left admin main menu could disappear completely. Shopware's menu list is no longer filtered or observed; "Show under Content in the main menu" now only hides the own entry via CSS
+
+# 2.0.9
+- Overview: columns status, original, WebP, saving and the "Recreate" button centred under their headings
+
+# 2.0.8
+- New setting "Name of the media folder" (default "Modulwerk WebP-Konverter"): renames the folder under Content → Media right after saving; the overview shows the current folder name
+
+# 2.0.7
+- New setting "Show under Content in the main menu": show or hide the admin menu entry, takes effect right after saving; settings page with "Overview" button
+
 # 2.0.6
 - Copyright holder in licence and composer.json: Danny Hombeck
 

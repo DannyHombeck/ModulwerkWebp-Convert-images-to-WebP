@@ -1,0 +1,43 @@
+{
+    "name": "modulwerk/webp",
+    "description": "Wandelt JPG- und PNG-Bilder in WebP um und liefert sie in der Storefront aus",
+    "version": "2.0.6",
+    "type": "shopware-platform-plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Modulwerk"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "shopware/core": ">=6.7.0 <6.9.0",
+        "shopware/storefront": ">=6.7.0 <6.9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ModulwerkWebp\\": "src/"
+        }
+    },
+    "extra": {
+        "shopware-plugin-class": "ModulwerkWebp\\ModulwerkWebp",
+        "plugin-icon": "src/Resources/config/plugin.png",
+        "copyright": "(c) by Danny Hombeck",
+        "label": {
+            "de-DE": "Modulwerk WebP-Konverter",
+            "en-GB": "Modulwerk WebP converter"
+        },
+        "description": {
+            "de-DE": "Wandelt JPG- und PNG-Bilder samt Thumbnails in WebP um und liefert sie in der Storefront aus. Originale bleiben unverändert.",
+            "en-GB": "Converts JPG and PNG images including thumbnails to WebP and serves them in the storefront. Originals stay untouched."
+        },
+        "manufacturerLink": {
+            "de-DE": "https://danny-hombeck.de/",
+            "en-GB": "https://danny-hombeck.de/"
+        },
+        "supportLink": {
+            "de-DE": "https://danny-hombeck.de/",
+            "en-GB": "https://danny-hombeck.de/"
+        }
+    }
+}

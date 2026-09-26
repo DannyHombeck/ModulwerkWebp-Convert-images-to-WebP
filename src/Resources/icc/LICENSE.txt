@@ -1,0 +1,7 @@
+sRGB-v2-micro.icc
+
+Kompaktes sRGB-Farbprofil aus "Compact ICC Profiles" von Clinton Ingram
+https://github.com/saucecontrol/Compact-ICC-Profiles
+
+Lizenz: CC0 1.0 Universal (gemeinfrei)
+Wird nur als Ziel der Farbumrechnung verwendet, nicht in die WebP-Dateien geschrieben.

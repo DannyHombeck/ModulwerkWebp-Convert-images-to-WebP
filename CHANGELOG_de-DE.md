@@ -1,3 +1,12 @@
+# 2.2.0
+- Neu: GIF- und TIFF-Bilder werden umgewandelt, jeweils mit eigenem Schalter und eigener Verlustfrei-Option (GIF standardmäßig verlustfrei). Animierte GIFs werden zu animiertem WebP (mit Imagick); mit GD werden sie übersprungen, damit die Animation nicht verloren geht. TIFFs werden mit der ersten Seite umgewandelt, CMYK wird nach sRGB umgerechnet; ohne Imagick werden sie übersprungen
+
+# 2.1.1
+- Eigener Schalter „BMP verlustfrei umwandeln“ (standardmäßig aus), wie bei JPG und PNG; „PNG verlustfrei umwandeln“ gilt wieder nur für PNG
+
+# 2.1.0
+- Neu: BMP-Bilder werden ebenfalls umgewandelt (Einstellung „BMP-Bilder umwandeln“, standardmäßig an). BMP wird wie PNG behandelt – Transparenz bleibt erhalten, es gilt „PNG und BMP verlustfrei umwandeln“. BMP-Varianten, die GD nicht lesen kann, werden übersprungen statt als Fehler gemeldet
+
 # 2.0.17
 - Fehler behoben: „timeout of 30000ms exceeded“ im Admin. Umwandeln, Löschen und Cache leeren dürfen jetzt bis zu 3 Minuten dauern statt 30 Sekunden; jeder Umwandlungsschritt ist auf rund 15 Sekunden begrenzt, das Nachtragen im Medienordner läuft nur noch, solange Zeit übrig ist
 

@@ -1,6 +1,6 @@
 # Modulwerk WebP-Konverter (ModulwerkWebp)
 
-Wandelt JPG- und PNG-Bilder samt Thumbnails in WebP um und liefert sie in der
+Wandelt JPG-, PNG-, GIF-, BMP- und TIFF-Bilder samt Thumbnails in WebP um und liefert sie in der
 Storefront aus. Die Originale bleiben unverändert; die WebP-Dateien liegen in
 einem eigenen Verzeichnis und lassen sich jederzeit komplett entfernen.
 
@@ -99,6 +99,8 @@ Abschaltbar unter Einstellungen → Medienverwaltung.
 | Cache automatisch leeren | Seiten-Cache nach jeder Verarbeitung leeren |
 | Geplante Aufgabe: Abstand in Stunden oder feste Uhrzeit, Medien je Durchlauf | Automatik für neue Bilder |
 | Lazy Loading | `loading="lazy"` ab dem n-ten Bild; Klasse `no-lazyload` schließt aus |
+| GIF-/TIFF-Bilder umwandeln, GIF/TIFF verlustfrei | GIF samt Animation, TIFF mit erster Seite; beides mit eigenem Verlustfrei-Schalter |
+| BMP-Bilder umwandeln / BMP verlustfrei umwandeln | BMP mit Transparenz umwandeln, wahlweise pixelgenau; GD liest nicht jede BMP-Variante |
 | Name des Medienordners | Ordnername unter Inhalte → Medien, Standard „Modulwerk WebP-Konverter“ |
 | Unter „Inhalte“ im Hauptmenü anzeigen | Menüeintrag im Admin ein- oder ausblenden, wirkt direkt nach dem Speichern |
 
@@ -134,6 +136,17 @@ Zeitlimit greift.
   Imagick deshalb vor der Umwandlung nach sRGB um, damit die Farben stimmen.
   GD kann das nicht – solche Bilder werden mit GD übersprungen, die
   Storefront zeigt dann das Original.
+- GIF-Bilder werden umgewandelt, animierte GIFs zu animiertem WebP (nur mit
+  Imagick; mit GD werden animierte GIFs übersprungen, statische gehen auch dort).
+  „GIF verlustfrei umwandeln“ ist standardmäßig an.
+- TIFF-Bilder werden umgewandelt (nur mit Imagick). Chrome, Firefox und Edge
+  können TIFF nicht anzeigen – erst die WebP-Fassung macht sie sichtbar.
+  Mehrseitige TIFFs werden mit der ersten Seite umgewandelt.
+- BMP-Bilder werden ebenfalls umgewandelt (Einstellung „BMP-Bilder umwandeln“,
+  standardmäßig an); Transparenz bleibt erhalten, verlustfrei ist eigens
+  schaltbar („BMP verlustfrei umwandeln“). GD liest nicht jede BMP-Variante
+  (z. B. 32 Bit mit Transparenz); solche Bilder werden mit GD übersprungen,
+  Imagick wandelt sie um.
 - Private Medien (z. B. Dokumente) werden nie umgewandelt.
 - Bei externem Speicher (S3, CDN) landen die WebP-Dateien im selben
   öffentlichen Dateisystem.

@@ -1,6 +1,6 @@
 # Modulwerk WebP converter (ModulwerkWebp)
 
-Converts JPG and PNG images including thumbnails to WebP and serves them in
+Converts JPG, PNG, GIF, BMP and TIFF images including thumbnails to WebP and serves them in
 the storefront. Originals stay untouched; the WebP files live in their own
 directory and can be removed completely at any time.
 
@@ -96,6 +96,16 @@ there.
 - ⚠️ Lazy loading: do not enable it together with another lazy loading plugin
   or theme option. The option is therefore marked with a warning triangle in
   the settings.
+- GIF images are converted, animated GIFs to animated WebP (Imagick only; with
+  GD animated GIFs are skipped, static ones work there too). "Convert GIF
+  losslessly" is on by default.
+- TIFF images are converted (Imagick only). Chrome, Firefox and Edge cannot
+  display TIFF – the WebP version makes them visible. Multi-page TIFFs are
+  converted with their first page.
+- BMP images are converted too (setting "Convert BMP images", on by default);
+  transparency is kept, lossless is switchable separately ("Convert BMP
+  losslessly"). GD cannot read every BMP variant (e.g. 32 bit with
+  transparency); such images are skipped with GD, Imagick converts them.
 - Private media (e.g. documents) are never converted.
 - With external storage (S3, CDN) the WebP files end up in the same public
   filesystem.

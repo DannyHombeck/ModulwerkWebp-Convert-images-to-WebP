@@ -1,7 +1,7 @@
 {
     "name": "modulwerk/webp",
-    "description": "Wandelt JPG- und PNG-Bilder in WebP um und liefert sie in der Storefront aus",
-    "version": "2.0.17",
+    "description": "Wandelt JPG-, PNG-, GIF-, BMP- und TIFF-Bilder in WebP um und liefert sie in der Storefront aus",
+    "version": "2.2.0",
     "type": "shopware-platform-plugin",
     "license": "MIT",
     "authors": [
@@ -28,8 +28,8 @@
             "en-GB": "Modulwerk WebP converter"
         },
         "description": {
-            "de-DE": "Wandelt JPG- und PNG-Bilder samt Thumbnails in WebP um und liefert sie in der Storefront aus. Originale bleiben unverändert.",
-            "en-GB": "Converts JPG and PNG images including thumbnails to WebP and serves them in the storefront. Originals stay untouched."
+            "de-DE": "Wandelt JPG-, PNG-, GIF-, BMP- und TIFF-Bilder samt Thumbnails in WebP um und liefert sie in der Storefront aus. Originale bleiben unverändert.",
+            "en-GB": "Converts JPG, PNG, GIF, BMP and TIFF images including thumbnails to WebP and serves them in the storefront. Originals stay untouched."
         },
         "manufacturerLink": {
             "de-DE": "https://danny-hombeck.de/",

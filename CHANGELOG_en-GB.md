@@ -1,3 +1,12 @@
+# 2.2.0
+- New: GIF and TIFF images are converted, each with its own switch and lossless option (GIF lossless by default). Animated GIFs become animated WebP (with Imagick); with GD they are skipped so the animation is not lost. TIFFs are converted with their first page, CMYK is converted to sRGB; without Imagick they are skipped
+
+# 2.1.1
+- Separate switch "Convert BMP losslessly" (off by default), like for JPG and PNG; "Convert PNG losslessly" applies to PNG only again
+
+# 2.1.0
+- New: BMP images are converted too (setting "Convert BMP images", on by default). BMP is treated like PNG – transparency is kept, "Convert PNG and BMP losslessly" applies. BMP variants GD cannot read are skipped instead of reported as errors
+
 # 2.0.17
 - Fixed: "timeout of 30000ms exceeded" in the admin. Converting, deleting and clearing the cache may now take up to 3 minutes instead of 30 seconds; each conversion step is limited to about 15 seconds, filling in the media folder only runs while time is left
 

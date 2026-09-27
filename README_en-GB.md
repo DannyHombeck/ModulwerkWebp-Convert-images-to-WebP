@@ -33,7 +33,7 @@ Menu **Content → Modulwerk WebP converter** (can be switched off, then via
 "Show under Content in the main menu", takes effect right after saving):
 
 - **Convert pending images** processes all pending media in batches and shows
-  the progress. Each request takes at most about 20 seconds, so even a tight
+  the progress. Each request takes at most about 15 seconds, so even a tight
   `max_execution_time` does not cause an abort.
 - **Reconvert all images** discards all WebP files and reconverts every image
   with the current settings, e.g. after changing the quality. The cache is
@@ -44,9 +44,9 @@ Menu **Content → Modulwerk WebP converter** (can be switched off, then via
   media item
 
 New images are converted by the scheduled task `modulwerk_webp.convert`. It
-runs either at an interval in minutes (default 1440 = 24 hours) or once a day
-at a fixed time. From an interval of one hour on, a run works through all
-pending images, at most 15 minutes at a time. Switching it off sets the task
+runs either at a fixed interval in hours (1–168, default 24) or once a day at
+a fixed time. Each run works through all pending images, at most 15 minutes at
+a time. Switching it off sets the task
 to inactive under Settings → System → Scheduled tasks. A running scheduled
 task runner or the admin worker is required.
 
@@ -64,7 +64,7 @@ Under **Content → Media** an own folder lists the WebP version of every
 original image. Its name can be chosen freely in the settings under **Name of
 the media folder** (default "Modulwerk WebP-Konverter"); changing it renames
 the existing folder right after saving. The entries point directly to the files in
-`modulwerk-webp/`; nothing is copied and no thumbnails are created. Alt text and title are taken over from the original in all languages and kept in sync; edit them on the original. Deleting or
+`modulwerk-webp/`; nothing is copied and no thumbnails are created. Alt text and title are taken over from the original in all languages and kept in sync. Only filled-in texts are copied: an empty field on the original never deletes a text on the entry. Deleting or
 renaming an entry there makes the storefront serve the original again;
 "Recreate" in the overview brings it back. "Delete unused media" keeps the
 entries. Do not assign these entries to products or shopping experiences –

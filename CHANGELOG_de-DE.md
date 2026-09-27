@@ -1,3 +1,16 @@
+# 2.0.17
+- Fehler behoben: „timeout of 30000ms exceeded“ im Admin. Umwandeln, Löschen und Cache leeren dürfen jetzt bis zu 3 Minuten dauern statt 30 Sekunden; jeder Umwandlungsschritt ist auf rund 15 Sekunden begrenzt, das Nachtragen im Medienordner läuft nur noch, solange Zeit übrig ist
+
+# 2.0.16
+- Fehler behoben: Bei den Einträgen im Medienordner fehlte in der Sidebar unter Inhalte → Medien der Abschnitt „Informationen“ mit Alt-Text und Titel. Ursache war der fehlende Medientyp; er wird jetzt beim Anlegen gesetzt und beim Update für vorhandene Einträge nachgetragen
+
+# 2.0.15
+- Alt-Text und Titel: Der Abgleich übernimmt nur noch gefüllte Texte des Originals. Leere Felder am Original löschen keine Texte mehr, die am Eintrag im Medienordner stehen – bisher geschah das auch bei jedem Plugin-Update
+- Fehler behoben: Die Übernahme von Alt-Text und Titel brach auf MariaDB/MySQL mit „Column 'alt' is ambiguous“ ab, die Einträge im Medienordner blieben deshalb ohne Texte. Beim Update werden die Texte aller Einträge einmal nachgetragen
+
+# 2.0.14
+- Abstand der geplanten Aufgabe wird jetzt in Stunden eingestellt (1–168, Standard 24) statt in Minuten; ein bisher eingestellter Wert wird beim Update auf volle Stunden aufgerundet übernommen. Modus heißt jetzt „In festem Abstand“, Hilfetexte angepasst
+
 # 2.0.13
 - Übersicht und Einstellungen: Plugin-Icon vor dem Namen im Seitenkopf
 

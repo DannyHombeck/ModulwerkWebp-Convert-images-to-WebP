@@ -1,3 +1,16 @@
+# 2.0.17
+- Fixed: "timeout of 30000ms exceeded" in the admin. Converting, deleting and clearing the cache may now take up to 3 minutes instead of 30 seconds; each conversion step is limited to about 15 seconds, filling in the media folder only runs while time is left
+
+# 2.0.16
+- Fixed: for media folder entries the "Information" section with alt text and title was missing in the sidebar under Content → Media. The missing media type was the cause; it is now set on creation and filled in for existing entries on update
+
+# 2.0.15
+- Alt text and title: the sync now only takes over filled-in texts of the original. Empty fields on the original no longer delete texts on the media folder entry – previously this also happened on every plugin update
+- Fixed: taking over alt text and title failed on MariaDB/MySQL with "Column 'alt' is ambiguous", so the media folder entries stayed without texts. On update the texts of all entries are filled in once
+
+# 2.0.14
+- The scheduled task interval is now set in hours (1–168, default 24) instead of minutes; an existing value is rounded up to full hours on update. Mode is now called "At a fixed interval", help texts adjusted
+
 # 2.0.13
 - Overview and settings: plugin icon in front of the name in the page header
 

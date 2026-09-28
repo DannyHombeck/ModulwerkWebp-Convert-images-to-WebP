@@ -24,7 +24,7 @@ class StatusCommand extends Command
         $saved = $s['bytesOriginal'] - $s['bytesWebp'];
 
         $io->table(['', ''], [
-            ['Bilder (JPG/PNG)', $s['mediaTotal']],
+            ['Bilder (JPG/PNG/GIF/BMP/TIFF)', $s['mediaTotal']],
             ['davon offen', $s['mediaPending']],
             ['WebP-Dateien', $s['filesConverted']],
             ['übersprungen', $s['filesSkipped']],

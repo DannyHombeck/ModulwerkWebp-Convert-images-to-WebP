@@ -112,8 +112,14 @@ class MediaSubscriber implements EventSubscriberInterface
      */
     public function onConfigChanged(SystemConfigChangedEvent $event): void
     {
-        if (\in_array($event->getKey(), ['ModulwerkWebp.config.taskInterval', 'ModulwerkWebp.config.taskMode', 'ModulwerkWebp.config.scheduledTask'], true)) {
+        if (\in_array($event->getKey(), ['ModulwerkWebp.config.taskInterval', 'ModulwerkWebp.config.taskIntervalHours', 'ModulwerkWebp.config.taskMode', 'ModulwerkWebp.config.scheduledTask'], true)) {
             $this->safely(fn () => $this->taskConfigurator->apply());
+
+            return;
+        }
+
+        if ($event->getKey() === 'ModulwerkWebp.config.libraryFolderName') {
+            $this->safely(fn () => $this->conversionService->renameLibraryFolder());
 
             return;
         }

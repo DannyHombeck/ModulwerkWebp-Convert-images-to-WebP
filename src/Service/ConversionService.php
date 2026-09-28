@@ -86,8 +86,13 @@ class ConversionService
             }
         }
 
-        if ($this->config->mediaLibrary()) {
-            $this->syncLibrary(200);
+        /*
+         * Nachtragen im Medienordner nur, solange noch Zeit ist – sonst im
+         * nächsten Schritt. Neu umgewandelte Bilder werden ohnehin sofort
+         * eingetragen, hier geht es nur um Nachzügler.
+         */
+        if ($this->config->mediaLibrary() && ($maxSeconds <= 0 || (microtime(true) - $started) < $maxSeconds)) {
+            $this->syncLibrary(50);
         }
 
         $result['pending'] = $this->countPendingMedia();
@@ -109,9 +114,14 @@ class ConversionService
                 ['library' => Uuid::fromHexToBytes($libraryId), 'hash' => WebpPaths::hash($path)]
             );
 
-            // Alt-Text und Titel des Originals übernehmen (abschaltbar)
+            // Alt-Text und Titel des Originals übernehmen (abschaltbar).
+            // Ein Fehler hier macht den angelegten Eintrag nicht ungültig.
             if ($this->config->syncTexts()) {
-                $this->mediaLibrary->syncTexts([$mediaId]);
+                try {
+                    $this->mediaLibrary->syncTexts([$mediaId]);
+                } catch (\Throwable $e) {
+                    $this->logger->warning('[ModulwerkWebp] Alt text/title sync failed for ' . $path . ': ' . $e->getMessage());
+                }
             }
 
             return true;
@@ -126,10 +136,17 @@ class ConversionService
     }
 
     /**
+     * Medienordner nach der Einstellung "Name des Medienordners" benennen.
+     */
+    public function renameLibraryFolder(): void
+    {
+        $this->mediaLibrary->renameFolder();
+    }
+
+    /**
      * Trägt bereits umgewandelte Originale nach, die noch keinen Eintrag
      * im Medienordner haben (etwa nach dem Update auf diese Version).
-     */
-    /**
+     *
      * @return int Anzahl neu angelegter Einträge – 0, wenn nichts mehr
      *             nachzutragen ist (fehlgeschlagene Einträge zählen nicht)
      */
@@ -270,7 +287,7 @@ class ConversionService
         $media = $this->connection->fetchAssociative(
             'SELECT `path`, `mime_type` FROM `media`
              WHERE `id` = :id AND `path` IS NOT NULL AND `private` = 0 AND `mime_type` IN (:mimes)',
-            ['id' => Uuid::fromHexToBytes($mediaId), 'mimes' => ImageConverter::SUPPORTED_MIME_TYPES],
+            ['id' => Uuid::fromHexToBytes($mediaId), 'mimes' => ImageConverter::mimeTypes($this->config->enabledFormats())],
             ['mimes' => ArrayParameterType::STRING]
         );
 
@@ -282,7 +299,8 @@ class ConversionService
             $this->removeForMedia([$mediaId]);
         }
 
-        $mimeType = $media['mime_type'] === 'image/png' ? 'image/png' : 'image/jpeg';
+        // Einheitlicher MIME-Typ je Format (image/jpeg, image/png, image/gif, image/bmp, image/tiff)
+        $mimeType = ImageConverter::MIME_TYPES[ImageConverter::formatOf((string) $media['mime_type'])][0];
         $files = [];
 
         if ($this->config->convertOriginals()) {
@@ -343,7 +361,13 @@ class ConversionService
             }
 
             $quality = $isThumbnail ? $this->config->qualityThumbnail() : $this->config->qualityOriginal();
-            $lossless = $mimeType === 'image/png' ? $this->config->losslessPng() : $this->config->losslessJpg();
+            $lossless = match ($mimeType) {
+                'image/png' => $this->config->losslessPng(),
+                'image/gif' => $this->config->losslessGif(),
+                'image/bmp' => $this->config->losslessBmp(),
+                'image/tiff' => $this->config->losslessTiff(),
+                default => $this->config->losslessJpg(),
+            };
             $webp = $this->converter->convert($binary, $mimeType, $quality, $lossless, $engine);
 
             /*
@@ -382,10 +406,12 @@ class ConversionService
                 : ConversionException::encode(ConversionException::CONVERT_FAILED, $e->getMessage());
 
             /*
-             * Farbprofil, das sich nicht nach sRGB umrechnen lässt: kein
-             * Fehler, das Bild bleibt bewusst beim Original.
+             * Farbprofil, das sich nicht nach sRGB umrechnen lässt, oder
+             * eine BMP-Variante, die GD nicht lesen kann: kein Fehler, das
+             * Bild bleibt bewusst beim Original.
              */
-            $status = $e instanceof ConversionException && $e->getMessageCode() === ConversionException::COLOR_PROFILE
+            $status = $e instanceof ConversionException
+                && \in_array($e->getMessageCode(), [ConversionException::COLOR_PROFILE, ConversionException::FORMAT_UNSUPPORTED, ConversionException::PIXEL_LIMIT], true)
                 ? self::STATUS_SKIPPED
                 : self::STATUS_ERROR;
 
@@ -511,7 +537,7 @@ class ConversionService
     {
         return (int) $this->connection->fetchOne(
             'SELECT COUNT(*) FROM `media` m WHERE ' . $this->eligibleCondition(),
-            ['mimes' => ImageConverter::SUPPORTED_MIME_TYPES],
+            ['mimes' => ImageConverter::mimeTypes($this->config->enabledFormats())],
             ['mimes' => ArrayParameterType::STRING]
         );
     }
@@ -541,7 +567,7 @@ class ConversionService
 
         return [
             $this->eligibleCondition() . ' AND ' . $pending,
-            ['mimes' => ImageConverter::SUPPORTED_MIME_TYPES],
+            ['mimes' => ImageConverter::mimeTypes($this->config->enabledFormats())],
             ['mimes' => ArrayParameterType::STRING],
         ];
     }
@@ -765,6 +791,7 @@ class ConversionService
             'directory' => WebpPaths::DIRECTORY,
             'mediaLibrary' => $this->config->mediaLibrary(),
             'libraryEntries' => $this->mediaLibrary->countEntries(),
+            'libraryFolderName' => $this->mediaLibrary->folderName() ?? $this->config->libraryFolderName(),
             'libraryFolderId' => MediaLibraryService::folderId(),
             'autoClearCache' => $this->cache->isEnabled(),
         ];

@@ -1,6 +1,6 @@
 # Modulwerk WebP converter (ModulwerkWebp)
 
-Converts JPG and PNG images including thumbnails to WebP and serves them in
+Converts JPG, PNG, GIF, BMP and TIFF images including thumbnails to WebP and serves them in
 the storefront. Originals stay untouched; the WebP files live in their own
 directory and can be removed completely at any time.
 
@@ -28,10 +28,12 @@ The overview shows which library is available on the server.
 
 ## Usage
 
-Menu **Content → Modulwerk WebP converter**:
+Menu **Content → Modulwerk WebP converter** (can be switched off, then via
+**Settings → Extensions → Modulwerk WebP-Konverter**; setting
+"Show under Content in the main menu", takes effect right after saving):
 
 - **Convert pending images** processes all pending media in batches and shows
-  the progress. Each request takes at most about 20 seconds, so even a tight
+  the progress. Each request takes at most about 15 seconds, so even a tight
   `max_execution_time` does not cause an abort.
 - **Reconvert all images** discards all WebP files and reconverts every image
   with the current settings, e.g. after changing the quality. The cache is
@@ -42,9 +44,9 @@ Menu **Content → Modulwerk WebP converter**:
   media item
 
 New images are converted by the scheduled task `modulwerk_webp.convert`. It
-runs either at an interval in minutes (default 1440 = 24 hours) or once a day
-at a fixed time. From an interval of one hour on, a run works through all
-pending images, at most 15 minutes at a time. Switching it off sets the task
+runs either at a fixed interval in hours (1–168, default 24) or once a day at
+a fixed time. Each run works through all pending images, at most 15 minutes at
+a time. Switching it off sets the task
 to inactive under Settings → System → Scheduled tasks. A running scheduled
 task runner or the admin worker is required.
 
@@ -56,11 +58,13 @@ media and regenerated thumbnails. Can be switched off under Settings →
 Automation. Clear the cache yourself after changing settings and after
 deactivating the plugin.
 
-## Media folder "Modulwerk WebP-Konverter"
+## Media folder
 
-Under **Content → Media** the folder "Modulwerk WebP-Konverter" lists the WebP version
-of every original image. The entries point directly to the files in
-`modulwerk-webp/`; nothing is copied and no thumbnails are created. Alt text and title are taken over from the original in all languages and kept in sync; edit them on the original. Deleting or
+Under **Content → Media** an own folder lists the WebP version of every
+original image. Its name can be chosen freely in the settings under **Name of
+the media folder** (default "Modulwerk WebP-Konverter"); changing it renames
+the existing folder right after saving. The entries point directly to the files in
+`modulwerk-webp/`; nothing is copied and no thumbnails are created. Alt text and title are taken over from the original in all languages and kept in sync. Only filled-in texts are copied: an empty field on the original never deletes a text on the entry. Deleting or
 renaming an entry there makes the storefront serve the original again;
 "Recreate" in the overview brings it back. "Delete unused media" keeps the
 entries. Do not assign these entries to products or shopping experiences –
@@ -83,12 +87,30 @@ there.
 
 - GD decodes images completely into memory. Images for which `memory_limit`
   is not sufficient are marked as errors instead of aborting the script.
+- Images above 100 megapixels (width × height × frames) are skipped, they
+  would exceed the time and memory limits of the server. Large images and
+  animations use the faster WebP method.
+- If the server aborts a step (502/504), the affected image is marked as
+  "aborted"; the overview automatically continues with the others.
 - Phone and camera photos are rotated according to their EXIF orientation.
 - Colour profiles: browsers display WebP without a profile as sRGB. Images in
   another colour space (Adobe RGB, Display P3 from smartphones, CMYK) are
   therefore converted to sRGB by Imagick before conversion so the colours stay
   right. GD cannot do this – such images are skipped with GD and the
   storefront shows the original.
+- ⚠️ Lazy loading: do not enable it together with another lazy loading plugin
+  or theme option. The option is therefore marked with a warning triangle in
+  the settings.
+- GIF images are converted, animated GIFs to animated WebP (Imagick only; with
+  GD animated GIFs are skipped, static ones work there too). "Convert GIF
+  losslessly" is on by default.
+- TIFF images are converted (Imagick only). Chrome, Firefox and Edge cannot
+  display TIFF – the WebP version makes them visible. Multi-page TIFFs are
+  converted with their first page.
+- BMP images are converted too (setting "Convert BMP images", on by default);
+  transparency is kept, lossless is switchable separately ("Convert BMP
+  losslessly"). GD cannot read every BMP variant (e.g. 32 bit with
+  transparency); such images are skipped with GD, Imagick converts them.
 - Private media (e.g. documents) are never converted.
 - With external storage (S3, CDN) the WebP files end up in the same public
   filesystem.

@@ -48,6 +48,7 @@ return static function (ContainerConfigurator $configurator): void {
             service(Connection::class),
             service('media.repository'),
             service('media_folder.repository'),
+            service(WebpConfig::class),
         ]);
 
     $services->set(WebpCacheService::class)

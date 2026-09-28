@@ -2,21 +2,22 @@
     "modulwerk-webp": {
         "general": {
             "mainMenuItemGeneral": "Modulwerk WebP-Konverter",
-            "descriptionTextModule": "JPG- und PNG-Bilder in WebP umwandeln.",
+            "descriptionTextModule": "JPG-, PNG-, GIF-, BMP- und TIFF-Bilder in WebP umwandeln.",
             "settings": "Einstellungen"
         },
         "settings": {
             "title": "Modulwerk WebP-Konverter - Einstellungen",
             "saveSuccess": "Die Einstellungen wurden gespeichert.",
             "saveError": "Die Einstellungen konnten nicht gespeichert werden: ",
-            "saveHint": "Informationen zum Plugin anzeigen"
+            "saveHint": "Informationen zum Plugin anzeigen",
+            "buttonOverview": "Übersicht"
         },
         "overview": {
             "title": "Modulwerk WebP-Konverter",
             "cardStatus": "Stand der Umwandlung",
             "cardActions": "Umwandeln",
             "cardEntries": "Zuletzt verarbeitet",
-            "statTotal": "Bilder (JPG/PNG)",
+            "statTotal": "Bilder (JPG/PNG/GIF/BMP/TIFF)",
             "statPending": "Medien offen",
             "statConverted": "WebP-Dateien",
             "statSkipped": "Übersprungen",
@@ -61,7 +62,7 @@
             "original": "Original",
             "empty": "Noch keine Einträge.",
             "libraryFolder": "Medienordner",
-            "libraryEntries": "{count} Einträge im Ordner „Modulwerk WebP-Konverter“",
+            "libraryEntries": "{count} Einträge im Ordner „{folder}“",
             "libraryOff": "ausgeschaltet",
             "buttonOpenFolder": "Medienordner öffnen",
             "progressDoneAuto": "Fertig. Der Cache wurde automatisch geleert, die Storefront zeigt jetzt die WebP-Bilder.",
@@ -70,7 +71,9 @@
             "cacheAutoCleared": "Der Seiten-Cache wurde automatisch geleert.",
             "buttonRebuild": "Alle Bilder neu umwandeln",
             "confirmRebuild": "Alle WebP-Dateien löschen und sämtliche Bilder mit den aktuellen Einstellungen neu umwandeln? Die Originale bleiben erhalten. Bis ein Bild fertig ist, zeigt die Storefront das Original. Die Einträge im Medienordner werden dabei neu angelegt.",
-            "rebuildStarted": "Alle WebP-Dateien wurden verworfen, die Umwandlung läuft."
+            "rebuildStarted": "Alle WebP-Dateien wurden verworfen, die Umwandlung läuft.",
+            "gatewayError": "Der Server hat die Anfrage abgebrochen – meist ein Zeit- oder Speicherlimit des Servers. Das betroffene Bild ist als „abgebrochen“ vermerkt; ein erneuter Start macht mit den übrigen weiter",
+            "cacheClearFailed": "Die Bilder sind umgewandelt, aber der Seiten-Cache konnte nicht automatisch geleert werden (der Server hat abgebrochen). Bitte den Cache über „Cache leeren“ oder Einstellungen → System → Caches & Indizes leeren."
         },
         "doc": {
             "title": "Plugin-Informationen",
@@ -122,7 +125,9 @@
             "convert_failed": "Umwandlung fehlgeschlagen: {detail}",
             "library_deleted": "Im Medienordner gelöscht – Storefront zeigt das Original",
             "library_renamed": "Im Medienordner umbenannt – Storefront zeigt das Original",
-            "color_profile": "Farbprofil „{detail}“ lässt sich auf diesem Server nicht nach sRGB umrechnen (dafür wird Imagick mit Farbmanagement benötigt) – die Storefront zeigt das Original"
+            "color_profile": "Farbprofil „{detail}“ lässt sich auf diesem Server nicht nach sRGB umrechnen (dafür wird Imagick mit Farbmanagement benötigt) – die Storefront zeigt das Original",
+            "format_unsupported": "Format „{detail}“ kann GD nicht umwandeln (TIFF, GIF-Animation oder bestimmte BMP-Varianten) – die Storefront zeigt das Original. Mit Imagick wird es umgewandelt",
+            "pixel_limit": "Zu groß für die Umwandlung ({detail}, Grenze 100 MP) – die Storefront zeigt das Original"
         }
     }
 }

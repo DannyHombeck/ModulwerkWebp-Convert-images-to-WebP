@@ -57,7 +57,7 @@ class WebpApiController extends AbstractController
         // Geleert wird erst am Ende des ganzen Laufs (finish), nicht je Schritt
         $this->cache->defer();
 
-        return new JsonResponse($this->conversionService->processPending($limit, 20));
+        return new JsonResponse($this->conversionService->processPending($limit, 15));
     }
 
     /**

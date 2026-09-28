@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand(name: 'modulwerk:webp:convert', description: 'Wandelt offene JPG/PNG-Bilder in WebP um')]
+#[AsCommand(name: 'modulwerk:webp:convert', description: 'Wandelt offene JPG/PNG/GIF/BMP/TIFF-Bilder in WebP um')]
 class ConvertCommand extends Command
 {
     public function __construct(

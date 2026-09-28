@@ -49,6 +49,15 @@ class ModulwerkWebp extends Plugin
             // Ordner existiert noch nicht
         }
 
+        $this->migrateTaskInterval($connection);
+
+        // Fehlenden Medientyp bei vorhandenen Ordner-Einträgen ergänzen
+        try {
+            MediaLibraryService::repairMediaTypesWith($connection);
+        } catch (\Throwable) {
+            // Tabelle existiert noch nicht
+        }
+
         // Alt-Text und Titel der Originale in bestehende Ordner-Einträge übernehmen
         try {
             $hasColumn = $connection->fetchFirstColumn('SHOW COLUMNS FROM `modulwerk_webp_file` LIKE \'library_media_id\'');
@@ -67,6 +76,63 @@ class ModulwerkWebp extends Plugin
             }
         } catch (\Throwable) {
             // wird beim nächsten Anlegen eines Eintrags nachgeholt
+        }
+    }
+
+    /**
+     * Bis 2.0.13 wurde der Abstand der geplanten Aufgabe in Minuten
+     * eingestellt ("taskInterval"), jetzt in Stunden ("taskIntervalHours").
+     * Der alte Wert wird einmalig auf volle Stunden aufgerundet übernommen
+     * (mindestens 1) und danach entfernt.
+     */
+    private function migrateTaskInterval(Connection $connection): void
+    {
+        try {
+            $rows = $connection->fetchAllAssociative(
+                'SELECT `sales_channel_id`, `configuration_value` FROM `system_config`
+                 WHERE `configuration_key` = :key',
+                ['key' => 'ModulwerkWebp.config.taskInterval']
+            );
+
+            foreach ($rows as $row) {
+                $value = json_decode((string) $row['configuration_value'], true);
+                $minutes = \is_array($value) ? (int) ($value['_value'] ?? 0) : 0;
+                $hours = $minutes > 0 ? max(1, min(168, (int) ceil($minutes / 60))) : 24;
+                $salesChannelId = $row['sales_channel_id'];
+
+                $existing = $connection->fetchOne(
+                    'SELECT `id` FROM `system_config` WHERE `configuration_key` = :key AND '
+                    . ($salesChannelId === null ? '`sales_channel_id` IS NULL' : '`sales_channel_id` = :channel'),
+                    array_filter(['key' => 'ModulwerkWebp.config.taskIntervalHours', 'channel' => $salesChannelId], static fn ($v) => $v !== null)
+                );
+
+                $json = json_encode(['_value' => $hours]);
+
+                if ($existing !== false) {
+                    $connection->executeStatement(
+                        'UPDATE `system_config` SET `configuration_value` = :value, `updated_at` = NOW(3) WHERE `id` = :id',
+                        ['value' => $json, 'id' => $existing]
+                    );
+                } else {
+                    $connection->executeStatement(
+                        'INSERT INTO `system_config` (`id`, `configuration_key`, `configuration_value`, `sales_channel_id`, `created_at`)
+                         VALUES (:id, :key, :value, :channel, NOW(3))',
+                        [
+                            'id' => Uuid::randomBytes(),
+                            'key' => 'ModulwerkWebp.config.taskIntervalHours',
+                            'value' => $json,
+                            'channel' => $salesChannelId,
+                        ]
+                    );
+                }
+            }
+
+            $connection->executeStatement(
+                'DELETE FROM `system_config` WHERE `configuration_key` = :key',
+                ['key' => 'ModulwerkWebp.config.taskInterval']
+            );
+        } catch (\Throwable) {
+            // Ohne Übernahme gilt der Standard von 24 Stunden
         }
     }
 

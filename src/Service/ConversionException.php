@@ -17,6 +17,8 @@ class ConversionException extends \RuntimeException
     public const GD_WRITE_FAILED = 'gd_write_failed';
     public const CONVERT_FAILED = 'convert_failed';
     public const COLOR_PROFILE = 'color_profile';
+    public const FORMAT_UNSUPPORTED = 'format_unsupported';
+    public const PIXEL_LIMIT = 'pixel_limit';
 
     public function __construct(
         private readonly string $messageCode,

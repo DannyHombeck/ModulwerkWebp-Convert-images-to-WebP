@@ -15,10 +15,10 @@ namespace ModulwerkWebp\Service;
 class HtmlRewriter
 {
     /** Pfad mit normalen Schrägstrichen, z. B. in src und srcset */
-    private const PATTERN_PLAIN = '~(?<![A-Za-z0-9_\-])(?:media|thumbnail)/[^\s"\'<>()?,\\\\]+?\.(?:jpe?g|png)(?![A-Za-z0-9_.\-])~i';
+    private const PATTERN_PLAIN = '~(?<![A-Za-z0-9_\-])(?:media|thumbnail)/[^\s"\'<>()?,\\\\]+?\.(?:jpe?g|png|gif|bmp|tiff?)(?![A-Za-z0-9_.\-])~i';
 
     /** Derselbe Pfad in JSON-Optionen (data-*-options), dort als \/ maskiert */
-    private const PATTERN_ESCAPED = '~(?<![A-Za-z0-9_\-])(?:media|thumbnail)\\\\/(?:[^\s"\'<>()?,\\\\]|\\\\/)+?\.(?:jpe?g|png)(?![A-Za-z0-9_.\-])~i';
+    private const PATTERN_ESCAPED = '~(?<![A-Za-z0-9_\-])(?:media|thumbnail)\\\\/(?:[^\s"\'<>()?,\\\\]|\\\\/)+?\.(?:jpe?g|png|gif|bmp|tiff?)(?![A-Za-z0-9_.\-])~i';
 
     public function __construct(private readonly ConversionService $conversionService)
     {

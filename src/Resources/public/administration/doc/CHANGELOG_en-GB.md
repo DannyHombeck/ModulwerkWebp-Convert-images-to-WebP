@@ -1,3 +1,49 @@
+# 2.2.1
+- Fixed: "Request failed with status code 502". If the server aborts a conversion step (502/503/504 or time limit), the overview automatically continues with the other images – the affected image is marked as "aborted". Large images (above 4 MP) and animations use the faster WebP method; images above 100 MP are skipped. Clear message instead of a status code; if only clearing the cache fails, a notice is shown instead of an error
+
+# 2.2.0
+- New: GIF and TIFF images are converted, each with its own switch and lossless option (GIF lossless by default). Animated GIFs become animated WebP (with Imagick); with GD they are skipped so the animation is not lost. TIFFs are converted with their first page, CMYK is converted to sRGB; without Imagick they are skipped
+
+# 2.1.1
+- Separate switch "Convert BMP losslessly" (off by default), like for JPG and PNG; "Convert PNG losslessly" applies to PNG only again
+
+# 2.1.0
+- New: BMP images are converted too (setting "Convert BMP images", on by default). BMP is treated like PNG – transparency is kept, "Convert PNG and BMP losslessly" applies. BMP variants GD cannot read are skipped instead of reported as errors
+
+# 2.0.17
+- Fixed: "timeout of 30000ms exceeded" in the admin. Converting, deleting and clearing the cache may now take up to 3 minutes instead of 30 seconds; each conversion step is limited to about 15 seconds, filling in the media folder only runs while time is left
+
+# 2.0.16
+- Fixed: for media folder entries the "Information" section with alt text and title was missing in the sidebar under Content → Media. The missing media type was the cause; it is now set on creation and filled in for existing entries on update
+
+# 2.0.15
+- Alt text and title: the sync now only takes over filled-in texts of the original. Empty fields on the original no longer delete texts on the media folder entry – previously this also happened on every plugin update
+- Fixed: taking over alt text and title failed on MariaDB/MySQL with "Column 'alt' is ambiguous", so the media folder entries stayed without texts. On update the texts of all entries are filled in once
+
+# 2.0.14
+- The scheduled task interval is now set in hours (1–168, default 24) instead of minutes; an existing value is rounded up to full hours on update. Mode is now called "At a fixed interval", help texts adjusted
+
+# 2.0.13
+- Overview and settings: plugin icon in front of the name in the page header
+
+# 2.0.12
+- Entry under Settings → Extensions now leads directly to the overview instead of the settings
+
+# 2.0.11
+- Lazy loading setting marked with a warning triangle; the note not to enable it together with another lazy loading plugin or theme option now opens the help text
+
+# 2.0.10
+- Fixed: since 2.0.7 the left admin main menu could disappear completely. Shopware's menu list is no longer filtered or observed; "Show under Content in the main menu" now only hides the own entry via CSS
+
+# 2.0.9
+- Overview: columns status, original, WebP, saving and the "Recreate" button centred under their headings
+
+# 2.0.8
+- New setting "Name of the media folder" (default "Modulwerk WebP-Konverter"): renames the folder under Content → Media right after saving; the overview shows the current folder name
+
+# 2.0.7
+- New setting "Show under Content in the main menu": show or hide the admin menu entry, takes effect right after saving; settings page with "Overview" button
+
 # 2.0.6
 - Copyright holder in licence and composer.json: Danny Hombeck
 

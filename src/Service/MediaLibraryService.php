@@ -4,13 +4,15 @@ namespace ModulwerkWebp\Service;
 
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
+use Shopware\Core\Content\Media\MediaType\ImageType;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Uuid\Uuid;
 
 /**
  * Zeigt die WebP-Fassungen der Originalbilder im Admin unter
- * Inhalte → Medien im Ordner "Modulwerk WebP-Konverter".
+ * Inhalte → Medien im eigenen Medienordner (Name in den Einstellungen,
+ * Standard "Modulwerk WebP-Konverter").
  *
  * Die Einträge zeigen direkt auf die Dateien in modulwerk-webp/ – es wird
  * nichts kopiert. Thumbnails erscheinen nicht im Ordner, sonst stünde dort
@@ -25,6 +27,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
  */
 class MediaLibraryService
 {
+    /** Standardname, in den Einstellungen änderbar */
     public const FOLDER_NAME = 'Modulwerk WebP-Konverter';
 
     private bool $folderChecked = false;
@@ -32,8 +35,73 @@ class MediaLibraryService
     public function __construct(
         private readonly Connection $connection,
         private readonly EntityRepository $mediaRepository,
-        private readonly EntityRepository $mediaFolderRepository
+        private readonly EntityRepository $mediaFolderRepository,
+        private readonly WebpConfig $config
     ) {
+    }
+
+    /**
+     * Medientyp wie ihn Shopware beim Hochladen setzt. PNG-Originale
+     * gelten als transparent.
+     */
+    public static function imageType(bool $transparent): ImageType
+    {
+        $type = new ImageType();
+
+        if ($transparent) {
+            $type->addFlag(ImageType::TRANSPARENT);
+        }
+
+        return $type;
+    }
+
+    /**
+     * Ergänzt den Medientyp bei Einträgen im Ordner, die bis 2.0.15 ohne
+     * ihn angelegt wurden. Ohne ihn zeigt die Admin-Sidebar weder
+     * "Informationen" noch Alt-Text und Titel.
+     */
+    public static function repairMediaTypesWith(Connection $connection): int
+    {
+        $count = 0;
+
+        foreach ([true, false] as $transparent) {
+            $count += (int) $connection->executeStatement(
+                'UPDATE `media` `m`
+                 INNER JOIN `modulwerk_webp_file` `f` ON `f`.`library_media_id` = `m`.`id`
+                 LEFT JOIN `media` `o` ON `o`.`id` = `f`.`media_id`
+                 SET `m`.`media_type` = :type
+                 WHERE `m`.`media_type` IS NULL
+                   AND COALESCE(`o`.`mime_type` = \'image/png\', 0) = :png',
+                ['type' => serialize(self::imageType($transparent)), 'png' => $transparent ? 1 : 0]
+            );
+        }
+
+        return $count;
+    }
+
+    /**
+     * Aktueller Name des Ordners, null wenn er noch nicht existiert.
+     */
+    public function folderName(): ?string
+    {
+        $name = $this->connection->fetchOne(
+            'SELECT `name` FROM `media_folder` WHERE `id` = :id',
+            ['id' => Uuid::fromHexToBytes(self::folderId())]
+        );
+
+        return \is_string($name) ? $name : null;
+    }
+
+    /**
+     * Benennt den Ordner nach der Einstellung um. Der Ordner wird über seine
+     * feste ID gefunden, Einträge und Verknüpfungen bleiben also erhalten.
+     */
+    public function renameFolder(): void
+    {
+        $this->connection->executeStatement(
+            'UPDATE `media_folder` SET `name` = :name, `updated_at` = NOW(3) WHERE `id` = :id AND `name` <> :name',
+            ['name' => $this->config->libraryFolderName(), 'id' => Uuid::fromHexToBytes(self::folderId())]
+        );
     }
 
     public static function folderId(): string
@@ -54,7 +122,7 @@ class MediaLibraryService
         $this->ensureFolder();
 
         $original = $this->connection->fetchAssociative(
-            'SELECT `file_name`, `meta_data` FROM `media` WHERE `id` = :id',
+            'SELECT `file_name`, `meta_data`, `mime_type` FROM `media` WHERE `id` = :id',
             ['id' => Uuid::fromHexToBytes($originalMediaId)]
         ) ?: [];
 
@@ -80,6 +148,9 @@ class MediaLibraryService
             'fileSize' => $size,
             'uploadedAt' => new \DateTimeImmutable(),
             'metaData' => ['width' => $width, 'height' => $height, 'type' => \IMAGETYPE_WEBP],
+            // Ohne Medientyp bricht die Admin-Sidebar beim Abschnitt
+            // "Informationen" ab – dort stehen Alt-Text und Titel
+            'mediaTypeRaw' => serialize(self::imageType(\in_array($original['mime_type'] ?? '', ['image/png', 'image/gif'], true))),
         ];
 
         Context::createDefaultContext()->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($data): void {
@@ -91,7 +162,7 @@ class MediaLibraryService
 
     /**
      * Kopiert Alt-Text und Titel aller Sprachen vom Original auf den
-     * Eintrag im Medienordner. Per SQL, damit keine DAL-Ereignisse
+     * Eintrag im Medienordner – nur Felder, die am Original gefüllt sind. Per SQL, damit keine DAL-Ereignisse
      * ausgelöst werden (kein Kreislauf mit dem Subscriber).
      *
      * @param list<string>|null $originalMediaIds hex; null = alle
@@ -113,7 +184,8 @@ class MediaLibraryService
                 FROM `modulwerk_webp_file` `f`
                 INNER JOIN `media_translation` `t` ON `t`.`media_id` = `f`.`media_id`
                 INNER JOIN `media` `m` ON `m`.`id` = `f`.`library_media_id`
-                WHERE `f`.`library_media_id` IS NOT NULL AND `f`.`is_thumbnail` = 0';
+                WHERE `f`.`library_media_id` IS NOT NULL AND `f`.`is_thumbnail` = 0
+                  AND (NULLIF(TRIM(`t`.`alt`), \'\') IS NOT NULL OR NULLIF(TRIM(`t`.`title`), \'\') IS NOT NULL)';
         $params = [];
         $types = [];
 
@@ -129,10 +201,19 @@ class MediaLibraryService
             $types['ids'] = ArrayParameterType::BINARY;
         }
 
-        // updated_at zuerst, solange alt/title noch die alten Werte haben
+        /*
+         * Nur gefüllte Texte des Originals übernehmen: Ein leeres Feld am
+         * Original löscht keinen Text, der am WebP-Eintrag steht.
+         * updated_at zuerst, solange alt/title noch die alten Werte haben.
+         */
         $sql .= ' ON DUPLICATE KEY UPDATE
-                    `updated_at` = IF(`alt` <=> VALUES(`alt`) AND `title` <=> VALUES(`title`), `updated_at`, NOW(3)),
-                    `alt` = VALUES(`alt`), `title` = VALUES(`title`)';
+                    `media_translation`.`updated_at` = IF(
+                        (NULLIF(TRIM(VALUES(`alt`)), \'\') IS NULL OR `media_translation`.`alt` <=> VALUES(`alt`))
+                        AND (NULLIF(TRIM(VALUES(`title`)), \'\') IS NULL OR `media_translation`.`title` <=> VALUES(`title`)),
+                        `media_translation`.`updated_at`, NOW(3)
+                    ),
+                    `media_translation`.`alt` = IF(NULLIF(TRIM(VALUES(`alt`)), \'\') IS NULL, `media_translation`.`alt`, VALUES(`alt`)),
+                    `media_translation`.`title` = IF(NULLIF(TRIM(VALUES(`title`)), \'\') IS NULL, `media_translation`.`title`, VALUES(`title`))';
 
         return (int) $connection->executeStatement($sql, $params, $types);
     }
@@ -191,7 +272,7 @@ class MediaLibraryService
             Context::createDefaultContext()->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($configuration): void {
                 $this->mediaFolderRepository->create([[
                     'id' => self::folderId(),
-                    'name' => self::FOLDER_NAME,
+                    'name' => $this->config->libraryFolderName(),
                     'useParentConfiguration' => false,
                     'configuration' => $configuration,
                 ]], $context);

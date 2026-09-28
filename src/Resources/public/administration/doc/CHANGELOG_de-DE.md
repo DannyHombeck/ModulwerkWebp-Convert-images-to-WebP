@@ -1,3 +1,49 @@
+# 2.2.1
+- Fehler behoben: „Request failed with status code 502“. Bricht der Server einen Umwandlungsschritt ab (502/503/504 oder Zeitlimit), macht die Übersicht automatisch mit den übrigen Bildern weiter – das betroffene Bild ist als „abgebrochen“ vermerkt. Große Bilder (über 4 MP) und Animationen nutzen die schnellere WebP-Methode; Bilder über 100 MP werden übersprungen. Verständliche Meldung statt Statuscode; scheitert nur das Cache-Leeren, erscheint ein Hinweis statt eines Fehlers
+
+# 2.2.0
+- Neu: GIF- und TIFF-Bilder werden umgewandelt, jeweils mit eigenem Schalter und eigener Verlustfrei-Option (GIF standardmäßig verlustfrei). Animierte GIFs werden zu animiertem WebP (mit Imagick); mit GD werden sie übersprungen, damit die Animation nicht verloren geht. TIFFs werden mit der ersten Seite umgewandelt, CMYK wird nach sRGB umgerechnet; ohne Imagick werden sie übersprungen
+
+# 2.1.1
+- Eigener Schalter „BMP verlustfrei umwandeln“ (standardmäßig aus), wie bei JPG und PNG; „PNG verlustfrei umwandeln“ gilt wieder nur für PNG
+
+# 2.1.0
+- Neu: BMP-Bilder werden ebenfalls umgewandelt (Einstellung „BMP-Bilder umwandeln“, standardmäßig an). BMP wird wie PNG behandelt – Transparenz bleibt erhalten, es gilt „PNG und BMP verlustfrei umwandeln“. BMP-Varianten, die GD nicht lesen kann, werden übersprungen statt als Fehler gemeldet
+
+# 2.0.17
+- Fehler behoben: „timeout of 30000ms exceeded“ im Admin. Umwandeln, Löschen und Cache leeren dürfen jetzt bis zu 3 Minuten dauern statt 30 Sekunden; jeder Umwandlungsschritt ist auf rund 15 Sekunden begrenzt, das Nachtragen im Medienordner läuft nur noch, solange Zeit übrig ist
+
+# 2.0.16
+- Fehler behoben: Bei den Einträgen im Medienordner fehlte in der Sidebar unter Inhalte → Medien der Abschnitt „Informationen“ mit Alt-Text und Titel. Ursache war der fehlende Medientyp; er wird jetzt beim Anlegen gesetzt und beim Update für vorhandene Einträge nachgetragen
+
+# 2.0.15
+- Alt-Text und Titel: Der Abgleich übernimmt nur noch gefüllte Texte des Originals. Leere Felder am Original löschen keine Texte mehr, die am Eintrag im Medienordner stehen – bisher geschah das auch bei jedem Plugin-Update
+- Fehler behoben: Die Übernahme von Alt-Text und Titel brach auf MariaDB/MySQL mit „Column 'alt' is ambiguous“ ab, die Einträge im Medienordner blieben deshalb ohne Texte. Beim Update werden die Texte aller Einträge einmal nachgetragen
+
+# 2.0.14
+- Abstand der geplanten Aufgabe wird jetzt in Stunden eingestellt (1–168, Standard 24) statt in Minuten; ein bisher eingestellter Wert wird beim Update auf volle Stunden aufgerundet übernommen. Modus heißt jetzt „In festem Abstand“, Hilfetexte angepasst
+
+# 2.0.13
+- Übersicht und Einstellungen: Plugin-Icon vor dem Namen im Seitenkopf
+
+# 2.0.12
+- Eintrag unter Einstellungen → Erweiterungen führt direkt zur Übersicht statt zu den Einstellungen
+
+# 2.0.11
+- Einstellung Lazy Loading mit Warndreieck markiert; der Hinweis, sie nicht zusammen mit einem anderen Lazy-Loading-Plugin oder einer Theme-Option zu aktivieren, steht jetzt am Anfang des Hilfetexts
+
+# 2.0.10
+- Fehler behoben: Seit 2.0.7 konnte das linke Admin-Hauptmenü komplett verschwinden. Die Menüliste von Shopware wird nicht mehr gefiltert oder beobachtet; „Unter Inhalte im Hauptmenü anzeigen“ blendet nur noch den eigenen Eintrag per CSS aus
+
+# 2.0.9
+- Übersicht: Spalten Status, Original, WebP, Ersparnis und die Schaltfläche „Neu erzeugen“ mittig unter ihren Überschriften ausgerichtet
+
+# 2.0.8
+- Neue Einstellung „Name des Medienordners“ (Standard „Modulwerk WebP-Konverter“): benennt den Ordner unter Inhalte → Medien direkt nach dem Speichern um; die Übersicht zeigt den aktuellen Ordnernamen
+
+# 2.0.7
+- Neue Einstellung „Unter Inhalte im Hauptmenü anzeigen“: Menüeintrag im Admin ein- oder ausblenden, wirkt direkt nach dem Speichern; Einstellungsseite mit Schaltfläche „Übersicht“
+
 # 2.0.6
 - Rechteinhaber in Lizenz und composer.json: Danny Hombeck
 

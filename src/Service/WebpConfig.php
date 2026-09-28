@@ -37,6 +37,61 @@ class WebpConfig
         return $this->quality('qualityThumbnail', 78);
     }
 
+    public function convertBmp(): bool
+    {
+        return $this->bool('convertBmp', null, true);
+    }
+
+    public function convertGif(): bool
+    {
+        return $this->bool('convertGif', null, true);
+    }
+
+    public function convertTiff(): bool
+    {
+        return $this->bool('convertTiff', null, true);
+    }
+
+    /**
+     * JPG und PNG immer, GIF, BMP und TIFF je nach Einstellung.
+     *
+     * @return list<string>
+     */
+    public function enabledFormats(): array
+    {
+        $formats = [ImageConverter::FORMAT_JPEG, ImageConverter::FORMAT_PNG];
+
+        if ($this->convertGif()) {
+            $formats[] = ImageConverter::FORMAT_GIF;
+        }
+
+        if ($this->convertBmp()) {
+            $formats[] = ImageConverter::FORMAT_BMP;
+        }
+
+        if ($this->convertTiff()) {
+            $formats[] = ImageConverter::FORMAT_TIFF;
+        }
+
+        return $formats;
+    }
+
+    /** GIF sind Grafiken mit wenigen Farben – verlustfrei ist meist kleiner und scharf */
+    public function losslessGif(): bool
+    {
+        return $this->bool('losslessGif', null, true);
+    }
+
+    public function losslessTiff(): bool
+    {
+        return $this->bool('losslessTiff', null, false);
+    }
+
+    public function losslessBmp(): bool
+    {
+        return $this->bool('losslessBmp', null, false);
+    }
+
     public function losslessPng(): bool
     {
         return $this->bool('losslessPng', null, false);
@@ -62,6 +117,21 @@ class WebpConfig
         return $this->bool('mediaLibrary', null, true);
     }
 
+    /**
+     * Name des Medienordners unter Inhalte → Medien. Leer = Standardname.
+     */
+    public function libraryFolderName(): string
+    {
+        $value = $this->systemConfigService->get(self::PREFIX . 'libraryFolderName');
+        $name = \is_string($value) ? trim((string) preg_replace('/\s+/u', ' ', $value)) : '';
+
+        if ($name === '') {
+            return MediaLibraryService::FOLDER_NAME;
+        }
+
+        return mb_substr($name, 0, 255);
+    }
+
     public function skipLarger(): bool
     {
         return $this->bool('skipLarger', null, true);
@@ -77,11 +147,22 @@ class WebpConfig
     /**
      * Abstand der geplanten Aufgabe in Minuten.
      */
+    /**
+     * Abstand der geplanten Aufgabe in Minuten. Eingestellt wird er in
+     * Stunden (1–168); ältere Versionen speicherten Minuten unter
+     * "taskInterval", das gilt nur noch, solange es keine Stunden gibt.
+     */
     public function taskIntervalMinutes(): int
     {
-        $value = (int) $this->systemConfigService->get(self::PREFIX . 'taskInterval');
+        $hours = (int) $this->systemConfigService->get(self::PREFIX . 'taskIntervalHours');
 
-        return $value > 0 ? min($value, 1440) : 1440;
+        if ($hours > 0) {
+            return min($hours, 168) * 60;
+        }
+
+        $minutes = (int) $this->systemConfigService->get(self::PREFIX . 'taskInterval');
+
+        return $minutes > 0 ? max(60, (int) ceil(min($minutes, 1440) / 60) * 60) : 1440;
     }
 
     /**

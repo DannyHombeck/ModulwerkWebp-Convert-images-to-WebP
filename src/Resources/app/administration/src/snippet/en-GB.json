@@ -2,21 +2,22 @@
     "modulwerk-webp": {
         "general": {
             "mainMenuItemGeneral": "Modulwerk WebP converter",
-            "descriptionTextModule": "Convert JPG and PNG images to WebP.",
+            "descriptionTextModule": "Convert JPG, PNG, GIF, BMP and TIFF images to WebP.",
             "settings": "Settings"
         },
         "settings": {
             "title": "Modulwerk WebP converter - settings",
             "saveSuccess": "The settings have been saved.",
             "saveError": "The settings could not be saved: ",
-            "saveHint": "Show plugin information"
+            "saveHint": "Show plugin information",
+            "buttonOverview": "Overview"
         },
         "overview": {
             "title": "Modulwerk WebP converter",
             "cardStatus": "Conversion status",
             "cardActions": "Convert",
             "cardEntries": "Recently processed",
-            "statTotal": "Images (JPG/PNG)",
+            "statTotal": "Images (JPG/PNG/GIF/BMP/TIFF)",
             "statPending": "Media pending",
             "statConverted": "WebP files",
             "statSkipped": "Skipped",
@@ -61,7 +62,7 @@
             "original": "Original",
             "empty": "No entries yet.",
             "libraryFolder": "Media folder",
-            "libraryEntries": "{count} entries in the folder \"Modulwerk WebP-Konverter\"",
+            "libraryEntries": "{count} entries in the folder \"{folder}\"",
             "libraryOff": "disabled",
             "buttonOpenFolder": "Open media folder",
             "progressDoneAuto": "Done. The cache has been cleared automatically, the storefront now shows the WebP images.",
@@ -70,7 +71,9 @@
             "cacheAutoCleared": "The page cache has been cleared automatically.",
             "buttonRebuild": "Reconvert all images",
             "confirmRebuild": "Delete all WebP files and reconvert every image with the current settings? The originals are kept. Until an image is done, the storefront shows the original. The entries in the media folder are recreated.",
-            "rebuildStarted": "All WebP files have been discarded, conversion is running."
+            "rebuildStarted": "All WebP files have been discarded, conversion is running.",
+            "gatewayError": "The server aborted the request – usually a time or memory limit of the server. The affected image is marked as \"aborted\"; starting again continues with the others",
+            "cacheClearFailed": "The images are converted, but the page cache could not be cleared automatically (the server aborted). Please clear the cache via \"Clear cache\" or Settings → System → Caches & indexes."
         },
         "doc": {
             "title": "Plugin information",
@@ -122,7 +125,9 @@
             "convert_failed": "Conversion failed: {detail}",
             "library_deleted": "Deleted in the media folder – storefront shows the original",
             "library_renamed": "Renamed in the media folder – storefront shows the original",
-            "color_profile": "Colour profile \"{detail}\" cannot be converted to sRGB on this server (Imagick with colour management is required for that) – the storefront shows the original"
+            "color_profile": "Colour profile \"{detail}\" cannot be converted to sRGB on this server (Imagick with colour management is required for that) – the storefront shows the original",
+            "format_unsupported": "GD cannot convert the format \"{detail}\" (TIFF, GIF animation or certain BMP variants) – the storefront shows the original. Imagick converts it",
+            "pixel_limit": "Too large to convert ({detail}, limit 100 MP) – the storefront shows the original"
         }
     }
 }

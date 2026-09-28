@@ -1,6 +1,6 @@
 # Modulwerk WebP-Konverter (ModulwerkWebp)
 
-Wandelt JPG- und PNG-Bilder samt Thumbnails in WebP um und liefert sie in der
+Wandelt JPG-, PNG-, GIF-, BMP- und TIFF-Bilder samt Thumbnails in WebP um und liefert sie in der
 Storefront aus. Die Originale bleiben unverändert; die WebP-Dateien liegen in
 einem eigenen Verzeichnis und lassen sich jederzeit komplett entfernen.
 
@@ -29,10 +29,11 @@ Welche Bibliothek auf dem Server zur Verfügung steht, zeigt die Übersicht.
 
 ## Bedienung
 
-Menü **Inhalte → Modulwerk WebP-Konverter**:
+Menü **Inhalte → Modulwerk WebP-Konverter** (abschaltbar, dann über
+**Einstellungen → Erweiterungen → Modulwerk WebP-Konverter**):
 
 - **Offene Bilder umwandeln** arbeitet alle offenen Medien in Portionen ab und
-  zeigt den Fortschritt. Jede Anfrage dauert höchstens rund 20 Sekunden, so
+  zeigt den Fortschritt. Jede Anfrage dauert höchstens rund 15 Sekunden, so
   gibt es auch bei knappem `max_execution_time` keinen Abbruch.
 - **Alle Bilder neu umwandeln** verwirft alle WebP-Dateien und wandelt
   sämtliche Bilder mit den aktuellen Einstellungen neu um, etwa nach einer
@@ -44,9 +45,9 @@ Menü **Inhalte → Modulwerk WebP-Konverter**:
   **Neu erzeugen** je Medium
 
 Neue Bilder wandelt die geplante Aufgabe `modulwerk_webp.convert` um. Einstellbar
-ist, ob sie in einem Abstand von Minuten läuft (Standard 1440 = 24 Stunden) oder
-einmal täglich zu einer festen Uhrzeit. Ab einem Abstand von einer Stunde
-arbeitet ein Lauf alle offenen Bilder ab, höchstens 15 Minuten am Stück.
+ist, ob sie in einem festen Abstand in Stunden läuft (1–168, Standard 24) oder
+einmal täglich zu einer festen Uhrzeit. Jeder Lauf arbeitet alle offenen Bilder
+ab, höchstens 15 Minuten am Stück.
 Ausschalten setzt die Aufgabe unter Einstellungen → System → Aufgaben auf
 inaktiv. Voraussetzung ist ein laufender Scheduled-Task-Runner oder der
 Admin-Worker.
@@ -59,16 +60,19 @@ gelöschten Medien und neu erzeugten Thumbnails. Abschaltbar unter
 Einstellungen → Automatik. Nach Änderungen an den Einstellungen und nach dem
 Deaktivieren des Plugins den Cache selbst leeren.
 
-## Medienordner „Modulwerk WebP-Konverter“
+## Medienordner
 
-Unter **Inhalte → Medien** erscheint der Ordner „Modulwerk WebP-Konverter“ mit der
-WebP-Fassung jedes Originalbildes. Die Einträge zeigen direkt auf die Dateien
+Unter **Inhalte → Medien** erscheint ein eigener Ordner mit der WebP-Fassung
+jedes Originalbildes. Sein Name ist in den Einstellungen unter **Name des
+Medienordners** frei wählbar (Standard „Modulwerk WebP-Konverter“); eine
+Änderung benennt den vorhandenen Ordner nach dem Speichern direkt um. Die Einträge zeigen direkt auf die Dateien
 in `modulwerk-webp/`, es wird nichts kopiert und es entstehen keine Thumbnails.
 Thumbnails selbst werden dort nicht aufgeführt.
 
 - Alt-Text und Titel kommen in allen Sprachen vom Original und werden bei
-  jeder Änderung dort nachgezogen. Am Original pflegen – Änderungen direkt am
-  Eintrag im Ordner werden überschrieben.
+  jeder Änderung dort nachgezogen. Übernommen werden nur gefüllte Texte: Ein
+  leeres Feld am Original löscht nie einen Text am Eintrag im Ordner, ein
+  gefüllter Text am Original ersetzt ihn.
   Abschaltbar über „Alt-Text und Titel vom Original übernehmen“; beim
   Wiedereinschalten wird einmal alles abgeglichen.
 - Beim Löschen eines Originals verschwindet auch sein Eintrag im Ordner.
@@ -93,10 +97,16 @@ Abschaltbar unter Einstellungen → Medienverwaltung.
 | Überspringen, wenn nicht kleiner | vermeidet größere Dateien |
 | PHP-Bildverarbeitung (GD / Imagick) | welche PHP-Erweiterung umwandelt; „Automatisch“ empfohlen |
 | Cache automatisch leeren | Seiten-Cache nach jeder Verarbeitung leeren |
-| Geplante Aufgabe: Abstand in Minuten oder feste Uhrzeit, Medien je Durchlauf | Automatik für neue Bilder |
+| Geplante Aufgabe: Abstand in Stunden oder feste Uhrzeit, Medien je Durchlauf | Automatik für neue Bilder |
 | Lazy Loading | `loading="lazy"` ab dem n-ten Bild; Klasse `no-lazyload` schließt aus |
+| GIF-/TIFF-Bilder umwandeln, GIF/TIFF verlustfrei | GIF samt Animation, TIFF mit erster Seite; beides mit eigenem Verlustfrei-Schalter |
+| BMP-Bilder umwandeln / BMP verlustfrei umwandeln | BMP mit Transparenz umwandeln, wahlweise pixelgenau; GD liest nicht jede BMP-Variante |
+| Name des Medienordners | Ordnername unter Inhalte → Medien, Standard „Modulwerk WebP-Konverter“ |
+| Unter „Inhalte“ im Hauptmenü anzeigen | Menüeintrag im Admin ein- oder ausblenden, wirkt direkt nach dem Speichern |
 
-Lazy Loading nicht zusätzlich zu einem anderen Lazy-Loading-Plugin aktivieren.
+⚠️ Lazy Loading nicht zusätzlich zu einem anderen Lazy-Loading-Plugin oder einer
+entsprechenden Theme-Option aktivieren. In den Einstellungen ist die Option
+deshalb mit einem Warndreieck markiert.
 
 ## Befehle
 
@@ -120,12 +130,28 @@ Zeitlimit greift.
 - GD entpackt Bilder vollständig in den Speicher. Bilder, für die
   `memory_limit` nicht reicht, werden als Fehler markiert statt das Skript
   abzubrechen.
+- Bilder über 100 Megapixel (Breite × Höhe × Einzelbilder) werden übersprungen,
+  sie würden die Zeit- und Speicherlimits des Servers sprengen. Große Bilder und
+  Animationen werden mit der schnelleren WebP-Methode umgewandelt.
+- Bricht der Server einen Schritt ab (502/504), ist das betroffene Bild als
+  „abgebrochen“ vermerkt; die Übersicht macht automatisch mit den übrigen weiter.
 - Handy- und Kamerafotos werden anhand der EXIF-Ausrichtung gedreht.
 - Farbprofile: Browser zeigen WebP ohne Profil als sRGB an. Bilder in einem
   anderen Farbraum (Adobe RGB, Display P3 von Smartphones, CMYK) rechnet
   Imagick deshalb vor der Umwandlung nach sRGB um, damit die Farben stimmen.
   GD kann das nicht – solche Bilder werden mit GD übersprungen, die
   Storefront zeigt dann das Original.
+- GIF-Bilder werden umgewandelt, animierte GIFs zu animiertem WebP (nur mit
+  Imagick; mit GD werden animierte GIFs übersprungen, statische gehen auch dort).
+  „GIF verlustfrei umwandeln“ ist standardmäßig an.
+- TIFF-Bilder werden umgewandelt (nur mit Imagick). Chrome, Firefox und Edge
+  können TIFF nicht anzeigen – erst die WebP-Fassung macht sie sichtbar.
+  Mehrseitige TIFFs werden mit der ersten Seite umgewandelt.
+- BMP-Bilder werden ebenfalls umgewandelt (Einstellung „BMP-Bilder umwandeln“,
+  standardmäßig an); Transparenz bleibt erhalten, verlustfrei ist eigens
+  schaltbar („BMP verlustfrei umwandeln“). GD liest nicht jede BMP-Variante
+  (z. B. 32 Bit mit Transparenz); solche Bilder werden mit GD übersprungen,
+  Imagick wandelt sie um.
 - Private Medien (z. B. Dokumente) werden nie umgewandelt.
 - Bei externem Speicher (S3, CDN) landen die WebP-Dateien im selben
   öffentlichen Dateisystem.

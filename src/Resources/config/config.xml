@@ -52,6 +52,33 @@
             <helpText lang="de-DE">Wandelt alle von Shopware erzeugten Thumbnail-Größen um (z. B. 400, 800, 1920 px). Die meisten Bilder in Listings, Slidern und Erlebniswelten sind Thumbnails – diese Einstellung wirkt sich daher am stärksten auf die Ladezeit aus. Werden Thumbnails neu erzeugt (media:generate-thumbnails), entstehen ihre WebP-Dateien automatisch neu.</helpText>
         </input-field>
 
+
+        <input-field type="bool">
+            <name>convertGif</name>
+            <label>Convert GIF images</label>
+            <label lang="de-DE">GIF-Bilder umwandeln</label>
+            <defaultValue>true</defaultValue>
+            <helpText>Also converts GIF images. Transparency is kept. Animated GIFs become animated WebP files, which are usually much smaller – this requires Imagick; with GD, animated GIFs are skipped so the animation is not lost (static GIFs work with GD too). Switching off only affects new conversions; existing WebP files stay in place.</helpText>
+            <helpText lang="de-DE">Wandelt auch GIF-Bilder um. Transparenz bleibt erhalten. Animierte GIFs werden zu animierten WebP-Dateien, die meist deutlich kleiner sind – dafür wird Imagick benötigt; mit GD werden animierte GIFs übersprungen, damit die Animation nicht verloren geht (statische GIFs gehen auch mit GD). Ausschalten wirkt nur auf neue Umwandlungen; vorhandene WebP-Dateien bleiben bestehen.</helpText>
+        </input-field>
+        <input-field type="bool">
+            <name>convertBmp</name>
+            <label>Convert BMP images</label>
+            <label lang="de-DE">BMP-Bilder umwandeln</label>
+            <defaultValue>true</defaultValue>
+            <helpText>Also converts BMP images (Windows bitmap). BMP files are stored uncompressed and are therefore very large – the WebP version is usually only a fraction of the size. Transparency is kept; whether BMP is converted losslessly is set with "Convert BMP losslessly". Switching off only affects new conversions; existing WebP files of BMP images stay in place.</helpText>
+            <helpText lang="de-DE">Wandelt auch BMP-Bilder (Windows-Bitmap) um. BMP-Dateien sind unkomprimiert und deshalb sehr groß – die WebP-Fassung ist meist nur ein Bruchteil davon. Transparenz bleibt erhalten; ob BMP verlustfrei umgewandelt wird, legt „BMP verlustfrei umwandeln“ fest. Ausschalten wirkt nur auf neue Umwandlungen; vorhandene WebP-Dateien von BMP-Bildern bleiben bestehen.</helpText>
+        </input-field>
+
+        <input-field type="bool">
+            <name>convertTiff</name>
+            <label>Convert TIFF images</label>
+            <label lang="de-DE">TIFF-Bilder umwandeln</label>
+            <defaultValue>true</defaultValue>
+            <helpText>Also converts TIFF images. Chrome, Firefox and Edge cannot display TIFF at all – the WebP version makes such images visible in the storefront in the first place. Multi-page TIFFs are converted with their first page, CMYK is converted to sRGB. Requires Imagick; with GD, TIFF images are skipped. Switching off only affects new conversions; existing WebP files stay in place.</helpText>
+            <helpText lang="de-DE">Wandelt auch TIFF-Bilder um. Chrome, Firefox und Edge können TIFF gar nicht anzeigen – erst die WebP-Fassung macht solche Bilder in der Storefront sichtbar. Mehrseitige TIFFs werden mit ihrer ersten Seite umgewandelt, CMYK wird nach sRGB umgerechnet. Benötigt Imagick; mit GD werden TIFF-Bilder übersprungen. Ausschalten wirkt nur auf neue Umwandlungen; vorhandene WebP-Dateien bleiben bestehen.</helpText>
+        </input-field>
+
         <input-field type="int">
             <name>qualityOriginal</name>
             <label>Quality original images (1–100)</label>
@@ -81,6 +108,33 @@
             <defaultValue>false</defaultValue>
             <helpText>Converts PNG files pixel-perfect instead of using the quality setting. Recommended for logos, icons, graphics with sharp edges and screenshots with text. For photos saved as PNG, lossy conversion is much smaller. If the lossless result is not smaller than the original, the image is converted lossy with the configured quality instead (when 'Skip if WebP is not smaller' is on). Transparency is kept in both modes.</helpText>
             <helpText lang="de-DE">Wandelt PNG-Dateien pixelgenau um statt mit der eingestellten Qualität. Empfohlen für Logos, Icons, Grafiken mit harten Kanten und Screenshots mit Schrift. Bei Fotos, die als PNG gespeichert sind, ist die verlustbehaftete Umwandlung deutlich kleiner. Ist das verlustfreie Ergebnis nicht kleiner als das Original, wird mit der eingestellten Qualität verlustbehaftet umgewandelt (wenn „Überspringen, wenn WebP nicht kleiner ist“ aktiv ist). Transparenz bleibt in beiden Fällen erhalten.</helpText>
+        </input-field>
+
+
+        <input-field type="bool">
+            <name>losslessGif</name>
+            <label>Convert GIF losslessly</label>
+            <label lang="de-DE">GIF verlustfrei umwandeln</label>
+            <defaultValue>true</defaultValue>
+            <helpText>Converts GIF files pixel-perfect instead of using the quality setting. On by default: GIFs are graphics with few colours, where lossless WebP is usually smaller than lossy and stays sharp. Switch off for animated GIFs from video or photo material, which get much smaller lossy. If the lossless result is not smaller than the original, the image is converted lossy with the configured quality instead (when 'Skip if WebP is not smaller' is on). Only relevant if "Convert GIF images" is on.</helpText>
+            <helpText lang="de-DE">Wandelt GIF-Dateien pixelgenau um statt mit der eingestellten Qualität. Standardmäßig an: GIFs sind Grafiken mit wenigen Farben, bei denen verlustfreies WebP meist kleiner ist als verlustbehaftetes und scharf bleibt. Ausschalten bei animierten GIFs aus Video- oder Fotomaterial, die verlustbehaftet deutlich kleiner werden. Ist das verlustfreie Ergebnis nicht kleiner als das Original, wird mit der eingestellten Qualität verlustbehaftet umgewandelt (wenn „Überspringen, wenn WebP nicht kleiner ist“ aktiv ist). Nur wirksam, wenn „GIF-Bilder umwandeln“ an ist.</helpText>
+        </input-field>
+        <input-field type="bool">
+            <name>losslessBmp</name>
+            <label>Convert BMP losslessly</label>
+            <label lang="de-DE">BMP verlustfrei umwandeln</label>
+            <defaultValue>false</defaultValue>
+            <helpText>Converts BMP files pixel-perfect instead of using the quality setting. Useful for graphics, icons and screenshots saved as BMP; for photos, lossy conversion is much smaller. Either way the WebP is far smaller than the uncompressed BMP. If the lossless result is not smaller than the original, the image is converted lossy with the configured quality instead (when 'Skip if WebP is not smaller' is on). Transparency is kept in both modes. Only relevant if "Convert BMP images" is on.</helpText>
+            <helpText lang="de-DE">Wandelt BMP-Dateien pixelgenau um statt mit der eingestellten Qualität. Sinnvoll für Grafiken, Icons und Screenshots, die als BMP gespeichert sind; bei Fotos ist die verlustbehaftete Umwandlung deutlich kleiner. So oder so ist das WebP weit kleiner als das unkomprimierte BMP. Ist das verlustfreie Ergebnis nicht kleiner als das Original, wird mit der eingestellten Qualität verlustbehaftet umgewandelt (wenn „Überspringen, wenn WebP nicht kleiner ist“ aktiv ist). Transparenz bleibt in beiden Fällen erhalten. Nur wirksam, wenn „BMP-Bilder umwandeln“ an ist.</helpText>
+        </input-field>
+
+        <input-field type="bool">
+            <name>losslessTiff</name>
+            <label>Convert TIFF losslessly</label>
+            <label lang="de-DE">TIFF verlustfrei umwandeln</label>
+            <defaultValue>false</defaultValue>
+            <helpText>Converts TIFF files pixel-perfect instead of using the quality setting. TIFFs are often large photos or scans – lossy conversion is much smaller there. Useful for graphics and technical drawings saved as TIFF. If the lossless result is not smaller than the original, the image is converted lossy with the configured quality instead (when 'Skip if WebP is not smaller' is on). Only relevant if "Convert TIFF images" is on.</helpText>
+            <helpText lang="de-DE">Wandelt TIFF-Dateien pixelgenau um statt mit der eingestellten Qualität. TIFFs sind oft große Fotos oder Scans – dort ist die verlustbehaftete Umwandlung deutlich kleiner. Sinnvoll für Grafiken und technische Zeichnungen, die als TIFF gespeichert sind. Ist das verlustfreie Ergebnis nicht kleiner als das Original, wird mit der eingestellten Qualität verlustbehaftet umgewandelt (wenn „Überspringen, wenn WebP nicht kleiner ist“ aktiv ist). Nur wirksam, wenn „TIFF-Bilder umwandeln“ an ist.</helpText>
         </input-field>
 
         <input-field type="bool">
@@ -134,11 +188,21 @@
 
         <input-field type="bool">
             <name>mediaLibrary</name>
-            <label>Show WebP files in the media folder "Modulwerk WebP-Konverter"</label>
-            <label lang="de-DE">WebP-Dateien im Medienordner „Modulwerk WebP-Konverter“ anzeigen</label>
+            <label>Show WebP files in an own media folder</label>
+            <label lang="de-DE">WebP-Dateien in eigenem Medienordner anzeigen</label>
             <defaultValue>true</defaultValue>
-            <helpText>Lists the WebP version of every original image under Content → Media in the folder 'Modulwerk WebP-Konverter'. The entries point to the converted files, nothing is copied and no thumbnails are created; thumbnails are not listed. Alt text and title can be taken over from the original (see below). 'Delete unused media' keeps the entries. Deleting or renaming an entry there makes the storefront serve the original again; 'Recreate' in the overview brings it back. Do not assign these entries to products or shopping experiences – they are replaced when recreated. The storefront serves WebP automatically anyway.</helpText>
-            <helpText lang="de-DE">Listet die WebP-Fassung jedes Originalbildes unter Inhalte → Medien im Ordner „Modulwerk WebP-Konverter“. Die Einträge zeigen auf die umgewandelten Dateien, kopiert wird nichts und es entstehen keine Thumbnails; Thumbnails erscheinen dort nicht. Alt-Text und Titel können vom Original übernommen werden (siehe unten). „Unbenutzte Medien löschen“ lässt die Einträge stehen. Wird ein Eintrag dort gelöscht oder umbenannt, liefert die Storefront wieder das Original; „Neu erzeugen“ in der Übersicht holt ihn zurück. Die Einträge nicht Produkten oder Erlebniswelten zuweisen – beim Neu-Erzeugen werden sie ersetzt. Die Storefront liefert WebP ohnehin automatisch aus.</helpText>
+            <helpText>Lists the WebP version of every original image under Content → Media in an own folder (name see below, default 'Modulwerk WebP-Konverter'). The entries point to the converted files, nothing is copied and no thumbnails are created; thumbnails are not listed. Alt text and title can be taken over from the original (see below). 'Delete unused media' keeps the entries. Deleting or renaming an entry there makes the storefront serve the original again; 'Recreate' in the overview brings it back. Do not assign these entries to products or shopping experiences – they are replaced when recreated. The storefront serves WebP automatically anyway.</helpText>
+            <helpText lang="de-DE">Listet die WebP-Fassung jedes Originalbildes unter Inhalte → Medien in einem eigenen Ordner (Name siehe unten, Standard „Modulwerk WebP-Konverter“). Die Einträge zeigen auf die umgewandelten Dateien, kopiert wird nichts und es entstehen keine Thumbnails; Thumbnails erscheinen dort nicht. Alt-Text und Titel können vom Original übernommen werden (siehe unten). „Unbenutzte Medien löschen“ lässt die Einträge stehen. Wird ein Eintrag dort gelöscht oder umbenannt, liefert die Storefront wieder das Original; „Neu erzeugen“ in der Übersicht holt ihn zurück. Die Einträge nicht Produkten oder Erlebniswelten zuweisen – beim Neu-Erzeugen werden sie ersetzt. Die Storefront liefert WebP ohnehin automatisch aus.</helpText>
+        </input-field>
+
+        <input-field type="text">
+            <name>libraryFolderName</name>
+            <label>Name of the media folder</label>
+            <label lang="de-DE">Name des Medienordners</label>
+            <defaultValue>Modulwerk WebP-Konverter</defaultValue>
+            <placeholder>Modulwerk WebP-Konverter</placeholder>
+            <helpText>Name of the folder under Content → Media in which the WebP files are listed. Changing it renames the existing folder right after saving; the entries stay in it. Empty = 'Modulwerk WebP-Konverter'. The name set here always wins: a folder renamed directly under Content → Media gets this name again the next time the settings are saved.</helpText>
+            <helpText lang="de-DE">Name des Ordners unter Inhalte → Medien, in dem die WebP-Dateien aufgelistet werden. Eine Änderung benennt den vorhandenen Ordner direkt nach dem Speichern um, die Einträge bleiben darin. Leer = „Modulwerk WebP-Konverter“. Maßgeblich ist immer der Name hier: Wird der Ordner direkt unter Inhalte → Medien umbenannt, erhält er beim nächsten Speichern der Einstellungen wieder diesen Namen.</helpText>
         </input-field>
 
         <input-field type="bool">
@@ -146,8 +210,8 @@
             <label>Take over alt text and title from the original</label>
             <label lang="de-DE">Alt-Text und Titel vom Original übernehmen</label>
             <defaultValue>true</defaultValue>
-            <helpText>Copies alt text and title of the original image to its entry in the media folder "Modulwerk WebP-Konverter", in all languages. Changes on the original are carried over automatically; changes made directly on the entry are overwritten as long as this is on. Switch off to maintain the texts of the entries yourself – existing texts are kept. When switched on again, all entries are updated once from their originals. Only relevant if the media folder is enabled. Does not affect the storefront: it uses the texts of the original anyway.</helpText>
-            <helpText lang="de-DE">Überträgt Alt-Text und Titel des Originalbildes auf seinen Eintrag im Medienordner „Modulwerk WebP-Konverter“, in allen Sprachen. Änderungen am Original werden automatisch nachgezogen; Änderungen direkt am Eintrag werden überschrieben, solange diese Option an ist. Ausschalten, um die Texte der Einträge selbst zu pflegen – vorhandene Texte bleiben dabei stehen. Beim Wiedereinschalten werden alle Einträge einmal vom Original aktualisiert. Nur wirksam, wenn der Medienordner eingeschaltet ist. Keine Auswirkung auf die Storefront: Sie nutzt ohnehin die Texte des Originals.</helpText>
+            <helpText>Copies alt text and title of the original image to its entry in the media folder, in all languages. Changes on the original are carried over automatically. Only filled-in texts are taken over: an empty field on the original never deletes a text on the entry; a filled-in text on the original replaces it. Switch off to maintain the texts of the entries yourself – existing texts are kept. When switched on again, all entries are updated once from their originals. Only relevant if the media folder is enabled. Does not affect the storefront: it uses the texts of the original anyway.</helpText>
+            <helpText lang="de-DE">Überträgt Alt-Text und Titel des Originalbildes auf seinen Eintrag im Medienordner, in allen Sprachen. Änderungen am Original werden automatisch nachgezogen. Übernommen werden nur gefüllte Texte: Ein leeres Feld am Original löscht nie einen Text am Eintrag, ein gefüllter Text am Original ersetzt ihn. Ausschalten, um die Texte der Einträge selbst zu pflegen – vorhandene Texte bleiben dabei stehen. Beim Wiedereinschalten werden alle Einträge einmal vom Original aktualisiert. Nur wirksam, wenn der Medienordner eingeschaltet ist. Keine Auswirkung auf die Storefront: Sie nutzt ohnehin die Texte des Originals.</helpText>
         </input-field>
 
     </card>
@@ -170,8 +234,8 @@
             <label>Convert new images via scheduled task</label>
             <label lang="de-DE">Neue Bilder per geplanter Aufgabe umwandeln</label>
             <defaultValue>true</defaultValue>
-            <helpText>Converts new and changed images automatically in the background. The task modulwerk_webp.convert runs every 5 minutes and processes 'Media per run' images, then removes orphaned WebP files. When switched off, the task is set to inactive under Settings → System → Tasks. Requires either a cron job for bin/console scheduled-task:run and messenger:consume, or the admin worker (only runs while someone is logged in to the admin). Without it, use the button in the overview or bin/console modulwerk:webp:convert.</helpText>
-            <helpText lang="de-DE">Wandelt neue und geänderte Bilder automatisch im Hintergrund um. Die Aufgabe modulwerk_webp.convert läuft alle 5 Minuten, verarbeitet „Medien je Durchlauf“ Bilder und entfernt danach verwaiste WebP-Dateien. Ausgeschaltet wird die Aufgabe unter Einstellungen → System → Aufgaben auf inaktiv gesetzt. Voraussetzung ist ein Cronjob für bin/console scheduled-task:run und messenger:consume oder der Admin-Worker (läuft nur, solange jemand im Admin angemeldet ist). Ohne das den Button in der Übersicht oder bin/console modulwerk:webp:convert nutzen.</helpText>
+            <helpText>Converts new and changed images automatically in the background. The task modulwerk_webp.convert runs at the interval or time set below, works through all pending images and then removes orphaned WebP files. When switched off, the task is set to inactive under Settings → System → Tasks. Requires either a cron job for bin/console scheduled-task:run and messenger:consume, or the admin worker (only runs while someone is logged in to the admin). Without it, use the button in the overview or bin/console modulwerk:webp:convert.</helpText>
+            <helpText lang="de-DE">Wandelt neue und geänderte Bilder automatisch im Hintergrund um. Die Aufgabe modulwerk_webp.convert läuft im unten eingestellten Abstand oder zur eingestellten Uhrzeit, arbeitet alle offenen Bilder ab und entfernt danach verwaiste WebP-Dateien. Ausgeschaltet wird die Aufgabe unter Einstellungen → System → Aufgaben auf inaktiv gesetzt. Voraussetzung ist ein Cronjob für bin/console scheduled-task:run und messenger:consume oder der Admin-Worker (läuft nur, solange jemand im Admin angemeldet ist). Ohne das den Button in der Übersicht oder bin/console modulwerk:webp:convert nutzen.</helpText>
         </input-field>
 
         <input-field type="single-select">
@@ -179,13 +243,13 @@
             <label>When the scheduled task runs</label>
             <label lang="de-DE">Wann die geplante Aufgabe läuft</label>
             <defaultValue>interval</defaultValue>
-            <helpText>"Every few minutes" converts new images shortly after upload. "Once a day at a fixed time" collects everything and converts it in one go, e.g. at night – easier on the server during business hours. In daily mode the task works through all pending images, for at most 15 minutes per run.</helpText>
-            <helpText lang="de-DE">„Alle paar Minuten“ wandelt neue Bilder kurz nach dem Hochladen um. „Einmal täglich zu fester Uhrzeit“ sammelt alles und wandelt es in einem Rutsch um, etwa nachts – das schont den Server während der Geschäftszeit. Im täglichen Betrieb arbeitet die Aufgabe alle offenen Bilder ab, höchstens 15 Minuten je Lauf.</helpText>
+            <helpText>"At a fixed interval" runs the task every few hours (see interval below). "Once a day at a fixed time" collects everything and converts it in one go at the chosen time, e.g. at night – easier on the server during business hours. Either way a run works through all pending images, for at most 15 minutes.</helpText>
+            <helpText lang="de-DE">„In festem Abstand“ lässt die Aufgabe alle paar Stunden laufen (Abstand siehe unten). „Einmal täglich zu fester Uhrzeit“ sammelt alles und wandelt es zur gewählten Uhrzeit in einem Rutsch um, etwa nachts – das schont den Server während der Geschäftszeit. In beiden Fällen arbeitet ein Lauf alle offenen Bilder ab, höchstens 15 Minuten lang.</helpText>
             <options>
                 <option>
                     <id>interval</id>
-                    <name>Every few minutes</name>
-                    <name lang="de-DE">Alle paar Minuten</name>
+                    <name>At a fixed interval</name>
+                    <name lang="de-DE">In festem Abstand</name>
                 </option>
                 <option>
                     <id>daily</id>
@@ -196,14 +260,14 @@
         </input-field>
 
         <input-field type="int">
-            <name>taskInterval</name>
-            <label>Interval in minutes (when running every few minutes)</label>
-            <label lang="de-DE">Abstand in Minuten (bei „Alle paar Minuten“)</label>
-            <defaultValue>1440</defaultValue>
+            <name>taskIntervalHours</name>
+            <label>Interval in hours (when running at a fixed interval)</label>
+            <label lang="de-DE">Abstand in Stunden (bei „In festem Abstand“)</label>
+            <defaultValue>24</defaultValue>
             <min>1</min>
-            <max>1440</max>
-            <helpText>How often the task modulwerk_webp.convert checks for new images. Default: 1440 = once every 24 hours. Examples: 60 = every hour, 360 = every 6 hours, 720 = every 12 hours, 5 = every 5 minutes (new images become WebP almost immediately). Larger values (30–60) reduce server load on shops with few new images; smaller values make new images appear as WebP sooner. From an interval of one hour on, each run works through all pending images (at most 15 minutes per run); with shorter intervals it processes "Media per run" images per run. The change is applied to Settings → System → Tasks immediately.</helpText>
-            <helpText lang="de-DE">Wie oft die Aufgabe modulwerk_webp.convert nach neuen Bildern sieht. Standard: 1440 = einmal alle 24 Stunden. Beispiele: 60 = stündlich, 360 = alle 6 Stunden, 720 = alle 12 Stunden, 5 = alle 5 Minuten (neue Bilder sind fast sofort als WebP da). Größere Werte (30–60) entlasten den Server bei Shops mit wenigen neuen Bildern, kleinere Werte lassen neue Bilder schneller als WebP erscheinen. Ab einem Abstand von einer Stunde arbeitet jeder Lauf alle offenen Bilder ab (höchstens 15 Minuten je Lauf); bei kürzerem Abstand werden „Medien je Durchlauf“ Bilder je Lauf verarbeitet. Die Änderung wird sofort nach Einstellungen → System → Aufgaben übernommen.</helpText>
+            <max>168</max>
+            <helpText>How often the task modulwerk_webp.convert looks for new images, in hours. Default: 24 = once a day. Examples: 1 = every hour, 6 = every 6 hours, 12 = twice a day, 168 = once a week. Each run works through all pending images, at most 15 minutes at a time. The change is applied to Settings → System → Tasks immediately.</helpText>
+            <helpText lang="de-DE">Wie oft die Aufgabe modulwerk_webp.convert nach neuen Bildern sieht, in Stunden. Standard: 24 = einmal am Tag. Beispiele: 1 = stündlich, 6 = alle 6 Stunden, 12 = zweimal am Tag, 168 = einmal pro Woche. Jeder Lauf arbeitet alle offenen Bilder ab, höchstens 15 Minuten am Stück. Die Änderung wird sofort nach Einstellungen → System → Aufgaben übernommen.</helpText>
         </input-field>
 
         <input-field type="text">
@@ -223,8 +287,8 @@
             <defaultValue>20</defaultValue>
             <min>1</min>
             <max>500</max>
-            <helpText>How many media are converted per run of the scheduled task and per step of the button in the overview. One media item includes its original and all its thumbnails, i.e. often 6–10 files. Each step in the admin stops after about 20 seconds anyway. Lower the value (e.g. 5–10) on shared hosting, with little memory or large photos; raise it (50–100) on strong servers. The console command has no time limit.</helpText>
-            <helpText lang="de-DE">Wie viele Medien je Lauf der geplanten Aufgabe und je Schritt des Buttons in der Übersicht umgewandelt werden. Ein Medium umfasst sein Original und alle Thumbnails, also oft 6–10 Dateien. Jeder Schritt im Admin endet ohnehin nach rund 20 Sekunden. Bei Shared Hosting, wenig Speicher oder großen Fotos kleiner wählen (z. B. 5–10), auf starken Servern größer (50–100). Der Konsolenbefehl kennt kein Zeitlimit.</helpText>
+            <helpText>How many media are converted per run of the scheduled task and per step of the button in the overview. One media item includes its original and all its thumbnails, i.e. often 6–10 files. Each step in the admin stops after about 15 seconds anyway. Lower the value (e.g. 5–10) on shared hosting, with little memory or large photos; raise it (50–100) on strong servers. The console command has no time limit.</helpText>
+            <helpText lang="de-DE">Wie viele Medien je Lauf der geplanten Aufgabe und je Schritt des Buttons in der Übersicht umgewandelt werden. Ein Medium umfasst sein Original und alle Thumbnails, also oft 6–10 Dateien. Jeder Schritt im Admin endet ohnehin nach rund 15 Sekunden. Bei Shared Hosting, wenig Speicher oder großen Fotos kleiner wählen (z. B. 5–10), auf starken Servern größer (50–100). Der Konsolenbefehl kennt kein Zeitlimit.</helpText>
         </input-field>
     </card>
 
@@ -234,11 +298,11 @@
 
         <input-field type="bool">
             <name>lazyLoad</name>
-            <label>Load images when scrolled into view</label>
-            <label lang="de-DE">Bilder erst beim Scrollen laden</label>
+            <label>Load images when scrolled into view ⚠️</label>
+            <label lang="de-DE">Bilder erst beim Scrollen laden ⚠️</label>
             <defaultValue>false</defaultValue>
-            <helpText>Adds loading="lazy" and decoding="async" to images, so the browser only loads them shortly before they scroll into view. Reduces the data volume of the first page load and helps with Google PageSpeed. Existing loading="eager" is replaced as well. Images with the class 'no-lazyload' or fetchpriority="high" are left alone. Can be set per sales channel. Do not enable together with another lazy loading plugin or theme option. Clear the cache after switching.</helpText>
-            <helpText lang="de-DE">Ergänzt Bilder um loading="lazy" und decoding="async", der Browser lädt sie dann erst kurz bevor sie ins Bild scrollen. Verringert die Datenmenge beim ersten Seitenaufruf und hilft bei Google PageSpeed. Vorhandenes loading="eager" wird ebenfalls ersetzt. Bilder mit der Klasse „no-lazyload“ oder fetchpriority="high" bleiben unberührt. Je Verkaufskanal einstellbar. Nicht zusammen mit einem anderen Lazy-Loading-Plugin oder einer entsprechenden Theme-Option aktivieren. Nach dem Umschalten den Cache leeren.</helpText>
+            <helpText>⚠️ Do not enable together with another lazy loading plugin or theme option – images may then not load at all or load twice. Adds loading="lazy" and decoding="async" to images, so the browser only loads them shortly before they scroll into view. Reduces the data volume of the first page load and helps with Google PageSpeed. Existing loading="eager" is replaced as well. Images with the class 'no-lazyload' or fetchpriority="high" are left alone. Can be set per sales channel. Clear the cache after switching.</helpText>
+            <helpText lang="de-DE">⚠️ Nicht zusammen mit einem anderen Lazy-Loading-Plugin oder einer entsprechenden Theme-Option aktivieren – Bilder laden dann womöglich gar nicht oder doppelt. Ergänzt Bilder um loading="lazy" und decoding="async", der Browser lädt sie dann erst kurz bevor sie ins Bild scrollen. Verringert die Datenmenge beim ersten Seitenaufruf und hilft bei Google PageSpeed. Vorhandenes loading="eager" wird ebenfalls ersetzt. Bilder mit der Klasse „no-lazyload“ oder fetchpriority="high" bleiben unberührt. Je Verkaufskanal einstellbar. Nach dem Umschalten den Cache leeren.</helpText>
         </input-field>
 
         <input-field type="int">
@@ -249,6 +313,20 @@
             <min>0</min>
             <helpText>The first images of a page keep their loading behaviour and load immediately. They are usually visible without scrolling (logo, main slider, product image) – loading them lazily would delay the largest visible element (LCP) and worsen PageSpeed. Recommended: 2–4. Counts per page and per separately loaded block (e.g. header, footer). 0 = all images lazy.</helpText>
             <helpText lang="de-DE">Die ersten Bilder einer Seite behalten ihr Ladeverhalten und werden sofort geladen. Sie sind meist ohne Scrollen sichtbar (Logo, Haupt-Slider, Produktbild) – verzögertes Laden würde das größte sichtbare Element (LCP) bremsen und PageSpeed verschlechtern. Empfehlung: 2–4. Gezählt wird je Seite und je separat geladenem Bereich (z. B. Header, Footer). 0 = alle Bilder lazy.</helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Administration</title>
+        <title lang="de-DE">Administration</title>
+
+        <input-field type="bool">
+            <name>showInContentMenu</name>
+            <label>Show under "Content" in the main menu</label>
+            <label lang="de-DE">Unter „Inhalte“ im Hauptmenü anzeigen</label>
+            <defaultValue>true</defaultValue>
+            <helpText>Shows the entry of the WebP converter in the admin main menu under Content. When switched off, the overview remains accessible via Settings → Extensions → Modulwerk WebP-Konverter. Applies to all users and takes effect immediately after saving. Only the setting for all sales channels counts.</helpText>
+            <helpText lang="de-DE">Zeigt den Eintrag des WebP-Konverters im Hauptmenü des Admins unter Inhalte. Ausgeschaltet bleibt die Übersicht über Einstellungen → Erweiterungen → Modulwerk WebP-Konverter erreichbar. Gilt für alle Benutzer und wirkt direkt nach dem Speichern. Es zählt nur die Einstellung für alle Verkaufskanäle.</helpText>
         </input-field>
     </card>
 </config>

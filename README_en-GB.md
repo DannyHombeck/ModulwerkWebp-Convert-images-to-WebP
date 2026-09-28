@@ -87,6 +87,11 @@ there.
 
 - GD decodes images completely into memory. Images for which `memory_limit`
   is not sufficient are marked as errors instead of aborting the script.
+- Images above 100 megapixels (width × height × frames) are skipped, they
+  would exceed the time and memory limits of the server. Large images and
+  animations use the faster WebP method.
+- If the server aborts a step (502/504), the affected image is marked as
+  "aborted"; the overview automatically continues with the others.
 - Phone and camera photos are rotated according to their EXIF orientation.
 - Colour profiles: browsers display WebP without a profile as sRGB. Images in
   another colour space (Adobe RGB, Display P3 from smartphones, CMYK) are

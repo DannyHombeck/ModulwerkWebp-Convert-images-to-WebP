@@ -1,7 +1,7 @@
 {
     "name": "modulwerk/webp",
     "description": "Wandelt JPG-, PNG-, GIF-, BMP- und TIFF-Bilder in WebP um und liefert sie in der Storefront aus",
-    "version": "2.2.0",
+    "version": "2.2.1",
     "type": "shopware-platform-plugin",
     "license": "MIT",
     "authors": [

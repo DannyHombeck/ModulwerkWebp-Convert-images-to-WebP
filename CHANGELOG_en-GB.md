@@ -1,3 +1,6 @@
+# 2.2.1
+- Fixed: "Request failed with status code 502". If the server aborts a conversion step (502/503/504 or time limit), the overview automatically continues with the other images – the affected image is marked as "aborted". Large images (above 4 MP) and animations use the faster WebP method; images above 100 MP are skipped. Clear message instead of a status code; if only clearing the cache fails, a notice is shown instead of an error
+
 # 2.2.0
 - New: GIF and TIFF images are converted, each with its own switch and lossless option (GIF lossless by default). Animated GIFs become animated WebP (with Imagick); with GD they are skipped so the animation is not lost. TIFFs are converted with their first page, CMYK is converted to sRGB; without Imagick they are skipped
 

@@ -1,3 +1,6 @@
+# 2.2.1
+- Fehler behoben: „Request failed with status code 502“. Bricht der Server einen Umwandlungsschritt ab (502/503/504 oder Zeitlimit), macht die Übersicht automatisch mit den übrigen Bildern weiter – das betroffene Bild ist als „abgebrochen“ vermerkt. Große Bilder (über 4 MP) und Animationen nutzen die schnellere WebP-Methode; Bilder über 100 MP werden übersprungen. Verständliche Meldung statt Statuscode; scheitert nur das Cache-Leeren, erscheint ein Hinweis statt eines Fehlers
+
 # 2.2.0
 - Neu: GIF- und TIFF-Bilder werden umgewandelt, jeweils mit eigenem Schalter und eigener Verlustfrei-Option (GIF standardmäßig verlustfrei). Animierte GIFs werden zu animiertem WebP (mit Imagick); mit GD werden sie übersprungen, damit die Animation nicht verloren geht. TIFFs werden mit der ersten Seite umgewandelt, CMYK wird nach sRGB umgerechnet; ohne Imagick werden sie übersprungen
 

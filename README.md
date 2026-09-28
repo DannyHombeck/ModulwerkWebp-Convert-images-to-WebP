@@ -130,6 +130,11 @@ Zeitlimit greift.
 - GD entpackt Bilder vollständig in den Speicher. Bilder, für die
   `memory_limit` nicht reicht, werden als Fehler markiert statt das Skript
   abzubrechen.
+- Bilder über 100 Megapixel (Breite × Höhe × Einzelbilder) werden übersprungen,
+  sie würden die Zeit- und Speicherlimits des Servers sprengen. Große Bilder und
+  Animationen werden mit der schnelleren WebP-Methode umgewandelt.
+- Bricht der Server einen Schritt ab (502/504), ist das betroffene Bild als
+  „abgebrochen“ vermerkt; die Übersicht macht automatisch mit den übrigen weiter.
 - Handy- und Kamerafotos werden anhand der EXIF-Ausrichtung gedreht.
 - Farbprofile: Browser zeigen WebP ohne Profil als sRGB an. Bilder in einem
   anderen Farbraum (Adobe RGB, Display P3 von Smartphones, CMYK) rechnet
